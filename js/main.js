@@ -1,7 +1,7 @@
 'use strict';
 
 var TITLE = ['Однушка', 'Дом', 'Коттедж', 'Двушка', 'Трешка', 'Пентхаус', 'Глухие соседи', 'С видом на море'];
-var ADDRES = ['600, 350', '650, 300', '550, 250', '500, 300', '450, 150', '700, 400', '400, 400', '350, 350'];
+var ADDRESS = ['600, 350', '650, 300', '550, 250', '500, 300', '450, 150', '700, 400', '400, 400', '350, 350'];
 var PRICE = [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
 var TYPE_OF_PLACE = ['palace', 'flat', 'house', 'bungalo']; //  вид жилища
 var NUMBER_OF_ROOMS = [1, 2, 3, 4, 5, 6];
@@ -20,24 +20,18 @@ var PIN_HEIGHT = 70;
 document.querySelector('.map').classList.remove('map--faded');
 
 // создает случайное число в диапазоне 2 чисел
-var createRandomNumber = function (max, min) {
-  var randomMinMax = Math.floor(Math.random() * (max - min) + min);
-
-  return randomMinMax;
+var createRandomNumber = function (min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
 };
 
 // случайная координата по оси Х
 var createRandomXAxis = function () {
-  var randomXAxis = Math.floor(Math.random() * X_AXIS - PIN_HEIGHT);
-
-  return randomXAxis;
+  return Math.floor(Math.random() * X_AXIS - PIN_HEIGHT);
 };
 
 // создает случайный элемент из массива
 var createRandomElement = function (arr) {
-  var randomElemnt = arr [Math.floor(Math.random() * arr.length)];
-
-  return randomElemnt;
+  return arr [Math.floor(Math.random() * arr.length)];
 };
 
 // создает случайные элементы массива
@@ -55,11 +49,11 @@ var createRandomAdv = function () {
   for (var i = 0; i < ADV_NUMBER; i++) {
     createAdv[i] = {
       author: {
-        avatar: 'img/avatars/user0' + [i + 1] + '.png'
+        avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
       offer: {
         title: createRandomElement(TITLE),
-        address: createRandomElement(ADDRES),
+        address: createRandomElement(ADDRESS),
         price: createRandomElement(PRICE),
         type: createRandomElement(TYPE_OF_PLACE),
         rooms: createRandomElement(NUMBER_OF_ROOMS),
