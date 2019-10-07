@@ -103,4 +103,100 @@ var createMapPins = function () {
   similarAdv.appendChild(fragment);
 };
 
-createMapPins();
+// <---------------------------------------- 8. Личный проект: подробности ---------------------------------------->
+
+var ENTER_KEYCODE = 13;
+var INACTIVE_MAIN_PIN_SIZE = 65 / 2;
+
+// карта
+var map = document.querySelector('.map');
+
+map.classList.add('map--faded');
+
+// форма
+var form = document.querySelector('.ad-form');
+
+// добавляет атрибут 'disabled' форме
+var fieldsets = document.querySelectorAll('fieldset');
+for (var i = 0; i < fieldsets.length; i++) {
+  fieldsets[i].setAttribute('disabled', 'disabled');
+}
+
+// основная метка в разметке
+var mainPin = document.querySelector('.map__pin--main');
+
+// считывает координаты основной метки
+var mainPinCoordinates = mainPin.getAttribute('style');
+
+// поле ввода адреса (координат)
+var addressField = document.querySelector('#address');
+
+// координаты цифрами с помощью регулярного выражения
+var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
+
+// добавляет координаты карты в неактивном состоянии
+addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + INACTIVE_MAIN_PIN_SIZE)));
+
+// делает карту и форму активными
+var onShowMapAndForm = function () {
+  mainPin.removeEventListener('mousedown', onShowMapAndForm);
+  createMapPins();
+  map.classList.remove('map--faded');
+  addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + PIN_HEIGHT)));
+  form.classList.remove('ad-form--disabled');
+  for (var j = 0; j < fieldsets.length; j++) {
+    fieldsets[j].removeAttribute('disabled');
+  }
+};
+
+// активирует карту и форму по клику на основную метку
+mainPin.addEventListener('mousedown', onShowMapAndForm);
+
+// активирует карту и форму по нажатию enter на основную метку
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    onShowMapAndForm();
+  }
+});
+
+// поле ввода количества комнат в разметке
+var roomNumber = form.querySelector('#room_number');
+
+// поле ввода количества гостей
+var guests = form.querySelector('#capacity');
+
+
+form.addEventListener('click', function () {
+  if (roomNumber.value === '1') {
+    guests.value = 1;
+    guests[0].setAttribute('disabled', 'disabled');
+    guests[1].setAttribute('disabled', 'disabled');
+    guests[2].removeAttribute('disabled', 'disabled');
+    guests[3].setAttribute('disabled', 'disabled');
+  } else if (roomNumber.value === '2') {
+    guests.value = 2;
+    guests[0].setAttribute('disabled', 'disabled');
+    guests[1].removeAttribute('disabled', 'disabled');
+    guests[2].removeAttribute('disabled', 'disabled');
+  } else if (roomNumber.value === '3') {
+    guests.value = 3;
+    guests[0].removeAttribute('disabled', 'disabled');
+    guests[1].removeAttribute('disabled', 'disabled');
+    guests[2].removeAttribute('disabled', 'disabled');
+  } else if (roomNumber.value === '100') {
+    guests.value = 0;
+    guests[0].setAttribute('disabled', 'disabled');
+    guests[1].setAttribute('disabled', 'disabled');
+    guests[2].setAttribute('disabled', 'disabled');
+    guests[3].removeAttribute('disabled', 'disabled');
+  }
+});
+
+
+// if (roomNumber.value == 1) {
+// console.log('расрас_Оо')
+// } else {
+// console.log('ыыыыыыыыы')
+// }
+
+
