@@ -92,10 +92,10 @@ var createMapPin = function (adv) {
 };
 
 var createMapPins = function () {
+
   // создает фрагмент для вставки в шаблон
   var fragment = document.createDocumentFragment();
   var randomAdv = createRandomAdv();
-
   for (var i = 0; i < ADV_NUMBER; i++) {
     fragment.appendChild(createMapPin(randomAdv[i]));
   }
@@ -107,6 +107,7 @@ var createMapPins = function () {
 
 var ENTER_KEYCODE = 13;
 var INACTIVE_MAIN_PIN_SIZE = 65 / 2;
+var IS_PINS_RENDERED = false; // переменная для провеки условия отрисовки меток
 
 // карта
 var map = document.querySelector('.map');
@@ -137,15 +138,17 @@ var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 // добавляет координаты карты в неактивном состоянии
 addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + INACTIVE_MAIN_PIN_SIZE)));
 
-// делает карту и форму активными
+// делает карту и форму активными, отрисовывает метки на карте
 var onShowMapAndForm = function () {
-  mainPin.removeEventListener('mousedown', onShowMapAndForm);
-  createMapPins();
-  map.classList.remove('map--faded');
-  addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + PIN_HEIGHT)));
-  form.classList.remove('ad-form--disabled');
-  for (var j = 0; j < fieldsets.length; j++) {
-    fieldsets[j].removeAttribute('disabled');
+  if (!IS_PINS_RENDERED) {
+    createMapPins();
+    map.classList.remove('map--faded');
+    addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + PIN_HEIGHT)));
+    form.classList.remove('ad-form--disabled');
+    for (var j = 0; j < fieldsets.length; j++) {
+      fieldsets[j].removeAttribute('disabled');
+    }
+    IS_PINS_RENDERED = true;
   }
 };
 
@@ -165,7 +168,7 @@ var roomNumber = form.querySelector('#room_number');
 // поле ввода количества гостей
 var guests = form.querySelector('#capacity');
 
-
+// синхрогизирует поле «Количество комнат» с полем «Количество мест»
 form.addEventListener('click', function () {
   if (roomNumber.value === '1') {
     guests.value = 1;
@@ -191,12 +194,3 @@ form.addEventListener('click', function () {
     guests[3].removeAttribute('disabled', 'disabled');
   }
 });
-
-
-// if (roomNumber.value == 1) {
-// console.log('расрас_Оо')
-// } else {
-// console.log('ыыыыыыыыы')
-// }
-
-
