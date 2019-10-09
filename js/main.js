@@ -140,9 +140,11 @@ addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordina
 
 // делает карту и форму активными, отрисовывает метки на карте
 var onShowMapAndForm = function () {
+  // условие для однократной отрисовки меток на карте
   if (!IS_PINS_RENDERED) {
     createMapPins();
     map.classList.remove('map--faded');
+    // записывает координаты метки в поле 'адрес'
     addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + PIN_HEIGHT)));
     form.classList.remove('ad-form--disabled');
     for (var j = 0; j < fieldsets.length; j++) {
