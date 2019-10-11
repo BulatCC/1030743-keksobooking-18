@@ -16,9 +16,6 @@ var X_AXIS = 1200;
 var ADV_NUMBER = 8; //  количество объявлений
 var PIN_HEIGHT = 70;
 
-// У блока .map убераем класс .map--faded
-document.querySelector('.map').classList.remove('map--faded');
-
 // создает случайное число в диапазоне 2 чисел
 var createRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -112,8 +109,6 @@ var IS_PINS_RENDERED = false; // переменная для провеки ус
 // карта
 var map = document.querySelector('.map');
 
-map.classList.add('map--faded');
-
 // форма
 var form = document.querySelector('.ad-form');
 
@@ -170,8 +165,8 @@ var roomNumber = form.querySelector('#room_number');
 // поле ввода количества гостей
 var guests = form.querySelector('#capacity');
 
-// синхрогизирует поле «Количество комнат» с полем «Количество мест»
 form.addEventListener('click', function () {
+  // синхронизирует поле «Количество комнат» с полем «Количество мест»
   if (roomNumber.value === '1') {
     guests.value = 1;
     guests[0].setAttribute('disabled', 'disabled');
@@ -179,20 +174,32 @@ form.addEventListener('click', function () {
     guests[2].removeAttribute('disabled', 'disabled');
     guests[3].setAttribute('disabled', 'disabled');
   } else if (roomNumber.value === '2') {
-    guests.value = 2;
     guests[0].setAttribute('disabled', 'disabled');
     guests[1].removeAttribute('disabled', 'disabled');
     guests[2].removeAttribute('disabled', 'disabled');
+    guests[3].setAttribute('disabled', 'disabled');
   } else if (roomNumber.value === '3') {
-    guests.value = 3;
     guests[0].removeAttribute('disabled', 'disabled');
     guests[1].removeAttribute('disabled', 'disabled');
     guests[2].removeAttribute('disabled', 'disabled');
+    guests[3].setAttribute('disabled', 'disabled');
   } else if (roomNumber.value === '100') {
     guests.value = 0;
     guests[0].setAttribute('disabled', 'disabled');
     guests[1].setAttribute('disabled', 'disabled');
     guests[2].setAttribute('disabled', 'disabled');
     guests[3].removeAttribute('disabled', 'disabled');
+  }
+  // выводит кастомные сообщения об ошибке
+  if (roomNumber.value === '100' && guests.value !== '0') {
+    roomNumber.setCustomValidity('Не для гостей');
+  } else if (guests.value === '0' && roomNumber.value !== '100') {
+    guests.setCustomValidity('Выберите 100 комнат');
+  } else if (roomNumber.value < guests.value && guests.value !== '0') {
+    roomNumber.setCustomValidity('Гостей больше, чем мест. Выберете больше комнат');
+    guests.setCustomValidity('Гостей больше, чем мест. Выберете больше комнат');
+  } else {
+    roomNumber.setCustomValidity('');
+    guests.setCustomValidity('');
   }
 });
