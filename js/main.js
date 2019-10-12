@@ -177,12 +177,12 @@ var guests = form.querySelector('#capacity');
 // ставит атрибут 'disabled' в поле выбора количества гостей
 var setGuestValue = function (value) {
   return guests[value].setAttribute('disabled', '');
-}
+};
 
 // удаляет атрибут 'disabled' в поле выбора количества гостей
 var removeGuestValue = function (value) {
   return guests[value].removeAttribute('disabled');
-}
+};
 
 form.addEventListener('click', function () {
   // синхронизирует поле «Количество комнат» с полем «Количество мест»
@@ -208,7 +208,7 @@ form.addEventListener('click', function () {
     setGuestValue(1);
     setGuestValue(2);
     removeGuestValue(3);
-  };
+  }
 
   // выводит кастомные сообщения об ошибке
   if (roomNumber.value === '100' && guests.value !== '0') {
