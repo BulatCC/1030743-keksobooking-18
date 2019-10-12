@@ -115,7 +115,7 @@ var form = document.querySelector('.ad-form');
 // добавляет атрибут 'disabled' форме
 var fieldsets = document.querySelectorAll('fieldset');
 for (var i = 0; i < fieldsets.length; i++) {
-  fieldsets[i].setAttribute('disabled', 'disabled');
+  fieldsets[i].setAttribute('disabled', '');
 }
 
 // основная метка в разметке
@@ -130,8 +130,17 @@ var addressField = document.querySelector('#address');
 // координаты цифрами с помощью регулярного выражения
 var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 
+// координаты мекти по оси Х
+var addressFormCoordinatesX = Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE);
+
+// координаты метки по оси Y в активном состянии
+var addressFormCoordinatesY = Math.floor(parseInt(addressFormCoordinates[1], 10) + PIN_HEIGHT);
+
+// координат метки по оси Y в некативном состоянии
+var addressFormCoordinatesInactiveY = Math.floor(parseInt(addressFormCoordinates[1], 10) + INACTIVE_MAIN_PIN_SIZE);
+
 // добавляет координаты карты в неактивном состоянии
-addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + INACTIVE_MAIN_PIN_SIZE)));
+addressField.setAttribute('placeholder', addressFormCoordinatesX + ', ' + addressFormCoordinatesInactiveY);
 
 // делает карту и форму активными, отрисовывает метки на карте
 var onShowMapAndForm = function () {
@@ -140,7 +149,7 @@ var onShowMapAndForm = function () {
     createMapPins();
     map.classList.remove('map--faded');
     // записывает координаты метки в поле 'адрес'
-    addressField.setAttribute('placeholder', Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE) + ', ' + Math.floor((parseInt(addressFormCoordinates[1], 10) + PIN_HEIGHT)));
+    addressField.setAttribute('placeholder', addressFormCoordinatesX + ', ' + addressFormCoordinatesY);
     form.classList.remove('ad-form--disabled');
     for (var j = 0; j < fieldsets.length; j++) {
       fieldsets[j].removeAttribute('disabled');
@@ -165,36 +174,47 @@ var roomNumber = form.querySelector('#room_number');
 // поле ввода количества гостей
 var guests = form.querySelector('#capacity');
 
+// ставит атрибут 'disabled' в поле выбора количества гостей
+var setGuestValue = function (value) {
+  return guests[value].setAttribute('disabled', '');
+}
+
+// удаляет атрибут 'disabled' в поле выбора количества гостей
+var removeGuestValue = function (value) {
+  return guests[value].removeAttribute('disabled');
+}
+
 form.addEventListener('click', function () {
   // синхронизирует поле «Количество комнат» с полем «Количество мест»
   if (roomNumber.value === '1') {
     guests.value = 1;
-    guests[0].setAttribute('disabled', 'disabled');
-    guests[1].setAttribute('disabled', 'disabled');
-    guests[2].removeAttribute('disabled', 'disabled');
-    guests[3].setAttribute('disabled', 'disabled');
+    setGuestValue(0);
+    setGuestValue(1);
+    removeGuestValue(2);
+    setGuestValue(3);
   } else if (roomNumber.value === '2') {
-    guests[0].setAttribute('disabled', 'disabled');
-    guests[1].removeAttribute('disabled', 'disabled');
-    guests[2].removeAttribute('disabled', 'disabled');
-    guests[3].setAttribute('disabled', 'disabled');
+    setGuestValue(0);
+    removeGuestValue(1);
+    removeGuestValue(2);
+    setGuestValue(3);
   } else if (roomNumber.value === '3') {
-    guests[0].removeAttribute('disabled', 'disabled');
-    guests[1].removeAttribute('disabled', 'disabled');
-    guests[2].removeAttribute('disabled', 'disabled');
-    guests[3].setAttribute('disabled', 'disabled');
+    removeGuestValue(0);
+    removeGuestValue(1);
+    removeGuestValue(2);
+    setGuestValue(3);
   } else if (roomNumber.value === '100') {
     guests.value = 0;
-    guests[0].setAttribute('disabled', 'disabled');
-    guests[1].setAttribute('disabled', 'disabled');
-    guests[2].setAttribute('disabled', 'disabled');
-    guests[3].removeAttribute('disabled', 'disabled');
-  }
+    setGuestValue(0);
+    setGuestValue(1);
+    setGuestValue(2);
+    removeGuestValue(3);
+  };
+
   // выводит кастомные сообщения об ошибке
   if (roomNumber.value === '100' && guests.value !== '0') {
     roomNumber.setCustomValidity('Не для гостей');
   } else if (guests.value === '0' && roomNumber.value !== '100') {
-    guests.setCustomValidity('Выберите 100 комнат');
+    guests.setCustomValidity('Выберите 100 комнат для выбора данной опции');
   } else if (roomNumber.value < guests.value && guests.value !== '0') {
     roomNumber.setCustomValidity('Гостей больше, чем мест. Выберете больше комнат');
     guests.setCustomValidity('Гостей больше, чем мест. Выберете больше комнат');
