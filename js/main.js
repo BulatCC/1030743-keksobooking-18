@@ -103,7 +103,7 @@ var createMapPins = function () {
 // <---------------------------------------- 8. Личный проект: подробности ---------------------------------------->
 
 var ENTER_KEYCODE = 13;
-var INACTIVE_MAIN_PIN_SIZE = 65 / 2;
+var INACTIVE_HALF_MAIN_PIN_SIZE = 32;
 var IS_PINS_RENDERED = false; // переменная для провеки условия отрисовки меток
 
 // карта
@@ -130,17 +130,18 @@ var addressField = document.querySelector('#address');
 // координаты цифрами с помощью регулярного выражения
 var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 
-// координаты мекти по оси Х
-var addressFormCoordinatesX = Math.floor(parseInt(addressFormCoordinates[0], 10) + INACTIVE_MAIN_PIN_SIZE);
+// координаты основной метки в НЕАКТИВНОМ состянии
+var getCoordinatesInactivePin = function () {
+  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + INACTIVE_HALF_MAIN_PIN_SIZE]
+}
 
-// координаты метки по оси Y в активном состянии
-var addressFormCoordinatesY = Math.floor(parseInt(addressFormCoordinates[1], 10) + PIN_HEIGHT);
-
-// координат метки по оси Y в некативном состоянии
-var addressFormCoordinatesInactiveY = Math.floor(parseInt(addressFormCoordinates[1], 10) + INACTIVE_MAIN_PIN_SIZE);
+// координаты основной метки в АКТИВНОМ состянии
+var getCoordinatesActivePin = function () {
+  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + PIN_HEIGHT]
+}
 
 // добавляет координаты карты в неактивном состоянии
-addressField.setAttribute('placeholder', addressFormCoordinatesX + ', ' + addressFormCoordinatesInactiveY);
+addressField.setAttribute('placeholder', getCoordinatesInactivePin());
 
 // делает карту и форму активными, отрисовывает метки на карте
 var onShowMapAndForm = function () {
@@ -149,7 +150,7 @@ var onShowMapAndForm = function () {
     createMapPins();
     map.classList.remove('map--faded');
     // записывает координаты метки в поле 'адрес'
-    addressField.setAttribute('placeholder', addressFormCoordinatesX + ', ' + addressFormCoordinatesY);
+    addressField.setAttribute('placeholder', getCoordinatesActivePin());
     form.classList.remove('ad-form--disabled');
     for (var j = 0; j < fieldsets.length; j++) {
       fieldsets[j].removeAttribute('disabled');
