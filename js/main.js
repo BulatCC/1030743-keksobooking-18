@@ -132,12 +132,12 @@ var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 
 // координаты основной метки в НЕАКТИВНОМ состянии
 var getCoordinatesInactivePin = function () {
-  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + INACTIVE_HALF_MAIN_PIN_SIZE];
+  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + INACTIVE_HALF_MAIN_PIN_SIZE].join(', ');
 };
 
 // координаты основной метки в АКТИВНОМ состянии
 var getCoordinatesActivePin = function () {
-  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + PIN_HEIGHT];
+  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + PIN_HEIGHT].join(', ');
 };
 
 // добавляет координаты карты в неактивном состоянии
