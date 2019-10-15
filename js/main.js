@@ -130,16 +130,6 @@ var addressField = document.querySelector('#address');
 // координаты цифрами с помощью регулярного выражения
 var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 
-// // координаты основной метки в НЕАКТИВНОМ состянии
-// var getCoordinatesInactivePin = function () {
-//   return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + INACTIVE_HALF_MAIN_PIN_SIZE].join(', ');
-// };
-
-// // координаты основной метки в АКТИВНОМ состянии
-// var getCoordinatesActivePin = function () {
-//   return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + PIN_HEIGHT].join(', ');
-// };
-
 // координаты основной метки
 var getCoordinatesPin = function (pin) {
   return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + pin].join(', ');
@@ -181,12 +171,12 @@ var roomNumber = form.querySelector('#room_number');
 var guests = form.querySelector('#capacity');
 
 // ставит атрибут 'disabled' в поле выбора количества гостей
-var setGuestValue = function (value) {
+var disableElement = function (value) {
   return guests[value].setAttribute('disabled', '');
 };
 
 // удаляет атрибут 'disabled' в поле выбора количества гостей
-var removeGuestValue = function (value) {
+var enableElement = function (value) {
   return guests[value].removeAttribute('disabled');
 };
 
@@ -194,26 +184,26 @@ form.addEventListener('click', function () {
   // синхронизирует поле «Количество комнат» с полем «Количество мест»
   if (roomNumber.value === '1') {
     guests.value = 1;
-    setGuestValue(0);
-    setGuestValue(1);
-    removeGuestValue(2);
-    setGuestValue(3);
+    disableElement(0);
+    disableElement(1);
+    enableElement(2);
+    disableElement(3);
   } else if (roomNumber.value === '2') {
-    setGuestValue(0);
-    removeGuestValue(1);
-    removeGuestValue(2);
-    setGuestValue(3);
+    disableElement(0);
+    enableElement(1);
+    enableElement(2);
+    disableElement(3);
   } else if (roomNumber.value === '3') {
-    removeGuestValue(0);
-    removeGuestValue(1);
-    removeGuestValue(2);
-    setGuestValue(3);
+    enableElement(0);
+    enableElement(1);
+    enableElement(2);
+    disableElement(3);
   } else if (roomNumber.value === '100') {
     guests.value = 0;
-    setGuestValue(0);
-    setGuestValue(1);
-    setGuestValue(2);
-    removeGuestValue(3);
+    disableElement(0);
+    disableElement(1);
+    disableElement(2);
+    enableElement(3);
   }
 
   // выводит кастомные сообщения об ошибке
