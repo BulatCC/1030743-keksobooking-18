@@ -16,9 +16,6 @@ var X_AXIS = 1200;
 var ADV_NUMBER = 8; //  количество объявлений
 var PIN_HEIGHT = 70;
 
-// У блока .map убераем класс .map--faded
-document.querySelector('.map').classList.remove('map--faded');
-
 // создает случайное число в диапазоне 2 чисел
 var createRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -92,10 +89,10 @@ var createMapPin = function (adv) {
 };
 
 var createMapPins = function () {
+
   // создает фрагмент для вставки в шаблон
   var fragment = document.createDocumentFragment();
   var randomAdv = createRandomAdv();
-
   for (var i = 0; i < ADV_NUMBER; i++) {
     fragment.appendChild(createMapPin(randomAdv[i]));
   }
@@ -103,4 +100,122 @@ var createMapPins = function () {
   similarAdv.appendChild(fragment);
 };
 
-createMapPins();
+// <---------------------------------------- 8. Личный проект: подробности ---------------------------------------->
+
+var ENTER_KEYCODE = 13;
+var INACTIVE_HALF_MAIN_PIN_SIZE = 32;
+var IS_PINS_RENDERED = false; // переменная для провеки условия отрисовки меток
+
+// карта
+var map = document.querySelector('.map');
+
+// форма
+var form = document.querySelector('.ad-form');
+
+// добавляет атрибут 'disabled' форме
+var fieldsets = document.querySelectorAll('fieldset');
+for (var i = 0; i < fieldsets.length; i++) {
+  fieldsets[i].setAttribute('disabled', '');
+}
+
+// основная метка в разметке
+var mainPin = document.querySelector('.map__pin--main');
+
+// считывает координаты основной метки
+var mainPinCoordinates = mainPin.getAttribute('style');
+
+// поле ввода адреса (координат)
+var addressField = document.querySelector('#address');
+
+// координаты цифрами с помощью регулярного выражения
+var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
+
+// координаты основной метки
+var getCoordinatesPin = function (pin) {
+  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + pin].join(', ');
+};
+
+// добавляет координаты карты в неактивном состоянии
+addressField.setAttribute('placeholder', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
+
+// делает карту и форму активными, отрисовывает метки на карте
+var onShowMapAndForm = function () {
+  // условие для однократной отрисовки меток на карте
+  if (!IS_PINS_RENDERED) {
+    createMapPins();
+    map.classList.remove('map--faded');
+    // записывает координаты метки в поле 'адрес'
+    addressField.setAttribute('placeholder', getCoordinatesPin(PIN_HEIGHT));
+    form.classList.remove('ad-form--disabled');
+    for (var j = 0; j < fieldsets.length; j++) {
+      fieldsets[j].removeAttribute('disabled');
+    }
+    IS_PINS_RENDERED = true;
+  }
+};
+
+// активирует карту и форму по клику на основную метку
+mainPin.addEventListener('mousedown', onShowMapAndForm);
+
+// активирует карту и форму по нажатию enter на основную метку
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    onShowMapAndForm();
+  }
+});
+
+// поле ввода количества комнат в разметке
+var roomNumber = form.querySelector('#room_number');
+
+// поле ввода количества гостей
+var guests = form.querySelector('#capacity');
+
+// ставит атрибут 'disabled' в поле выбора количества гостей
+var disableElement = function (value) {
+  return guests[value].setAttribute('disabled', '');
+};
+
+// удаляет атрибут 'disabled' в поле выбора количества гостей
+var enableElement = function (value) {
+  return guests[value].removeAttribute('disabled');
+};
+
+form.addEventListener('click', function () {
+  // синхронизирует поле «Количество комнат» с полем «Количество мест»
+  if (roomNumber.value === '1') {
+    guests.value = 1;
+    disableElement(0);
+    disableElement(1);
+    enableElement(2);
+    disableElement(3);
+  } else if (roomNumber.value === '2') {
+    disableElement(0);
+    enableElement(1);
+    enableElement(2);
+    disableElement(3);
+  } else if (roomNumber.value === '3') {
+    enableElement(0);
+    enableElement(1);
+    enableElement(2);
+    disableElement(3);
+  } else if (roomNumber.value === '100') {
+    guests.value = 0;
+    disableElement(0);
+    disableElement(1);
+    disableElement(2);
+    enableElement(3);
+  }
+
+  // выводит кастомные сообщения об ошибке
+  if (roomNumber.value === '100' && guests.value !== '0') {
+    roomNumber.setCustomValidity('Не для гостей');
+  } else if (guests.value === '0' && roomNumber.value !== '100') {
+    guests.setCustomValidity('Выберите 100 комнат для выбора данной опции');
+  } else if (roomNumber.value < guests.value && guests.value !== '0') {
+    roomNumber.setCustomValidity('Гостей больше, чем мест. Выберете больше комнат');
+    guests.setCustomValidity('Гостей больше, чем мест. Выберете больше комнат');
+  } else {
+    roomNumber.setCustomValidity('');
+    guests.setCustomValidity('');
+  }
+});
