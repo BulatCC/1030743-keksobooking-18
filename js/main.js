@@ -130,18 +130,23 @@ var addressField = document.querySelector('#address');
 // координаты цифрами с помощью регулярного выражения
 var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 
-// координаты основной метки в НЕАКТИВНОМ состянии
-var getCoordinatesInactivePin = function () {
-  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + INACTIVE_HALF_MAIN_PIN_SIZE].join(', ');
-};
+// // координаты основной метки в НЕАКТИВНОМ состянии
+// var getCoordinatesInactivePin = function () {
+//   return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + INACTIVE_HALF_MAIN_PIN_SIZE].join(', ');
+// };
 
-// координаты основной метки в АКТИВНОМ состянии
-var getCoordinatesActivePin = function () {
-  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + PIN_HEIGHT].join(', ');
+// // координаты основной метки в АКТИВНОМ состянии
+// var getCoordinatesActivePin = function () {
+//   return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + PIN_HEIGHT].join(', ');
+// };
+
+// координаты основной метки
+var getCoordinatesPin = function (pin) {
+  return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + pin].join(', ');
 };
 
 // добавляет координаты карты в неактивном состоянии
-addressField.setAttribute('placeholder', getCoordinatesInactivePin());
+addressField.setAttribute('placeholder', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
 
 // делает карту и форму активными, отрисовывает метки на карте
 var onShowMapAndForm = function () {
@@ -150,7 +155,7 @@ var onShowMapAndForm = function () {
     createMapPins();
     map.classList.remove('map--faded');
     // записывает координаты метки в поле 'адрес'
-    addressField.setAttribute('placeholder', getCoordinatesActivePin());
+    addressField.setAttribute('placeholder', getCoordinatesPin(PIN_HEIGHT));
     form.classList.remove('ad-form--disabled');
     for (var j = 0; j < fieldsets.length; j++) {
       fieldsets[j].removeAttribute('disabled');
