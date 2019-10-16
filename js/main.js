@@ -143,7 +143,7 @@ var onShowMapAndForm = function () {
   // условие для однократной отрисовки меток на карте
   if (!IS_PINS_RENDERED) {
     createMapPins();
-    createMapCards();
+    showOffer();
     map.classList.remove('map--faded');
     // записывает координаты метки в поле 'адрес'
     addressField.setAttribute('placeholder', getCoordinatesPin(PIN_HEIGHT));
@@ -280,7 +280,7 @@ var placeType = {
 };
 
 // создает карточку объявления
-var createMapCards = function () {
+var showOffer = function () {
   // создает фрагмент с карточкой объявления для вставки в шаблон
   var cardFragment = document.createDocumentFragment();
   var randomAdv = createRandomAdv();
