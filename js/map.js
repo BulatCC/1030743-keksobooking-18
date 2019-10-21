@@ -103,11 +103,21 @@
 
   // map.addEventListener('click', onPinClick);
 
-  // находит пин по которомы был клик
+  // функция для однократной отрисовки карточки объявления
+  var getRenderedCard = function () {
+    var cardPopup = map.querySelector('.popup');
+    if (cardPopup) {
+      cardPopup.remove();
+    }
+    showOffer();
+  };
+
+  // находит пин по которому был клик
   var onClickPin = function () {
-    var addClickListener = function (button) {
-      button.addEventListener('click', function () {
-        showOffer();
+    var addClickListener = function (mapPin) {
+      mapPin.addEventListener('click', function () {
+        mapPin.classList.add('map__pin--active');
+        getRenderedCard();
         // обработчик нажатия esc для закрытия карточки
         document.addEventListener('keydown', onEscClosePopup);
         // обработчик нклика для закрытия карточки
@@ -117,24 +127,27 @@
     };
     // находит пин по которму был клик
     for (var j = 0; j < window.mapPins.length; j++) {
-      var button = window.mapPins[j];
-      addClickListener(button);
-      // onEscClosePopup(button);
+      var mapPin = window.mapPins[j];
+      addClickListener(mapPin);
+      // onEscClosePopup(mapPin);
     }
+    // находит карточку-попап
+    var getCardPopup = function () {
+      return map.querySelector('.map__card');
+    };
 
     // закрывает карточку объявления по нажатию на Esc
     var onEscClosePopup = function () {
       if (window.utils.isEscPressed) {
-        map.querySelector('.map__card').classList.add('hidden');
+        getCardPopup().classList.add('hidden');
       }
     };
     // закрывает карточку объявления по клику
     var onClickClosePopup = function () {
-      map.querySelector('.map__card').classList.add('hidden');
+      getCardPopup().classList.add('hidden');
     };
   };
 
-  // вынес в объект одно значение потомучто позже надо будет больше значений передавать в глобальную область видимости
   window.map = {
     form: form
   };
