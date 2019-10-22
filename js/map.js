@@ -55,6 +55,10 @@
     var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
     // выводит переменную в глобальную область видимости
     window.mapPins = mapPins;
+    // добавляет дата-атрибуты пинам
+    for (var k = 0; k < window.data.ADV_NUMBER; k++) {
+      mapPins[k].setAttribute('data-index', k);
+    }
     // отслеживает на какой пин был клик
     onClickPin();
   };
@@ -82,45 +86,55 @@
   };
 
   // отрисовывает карточку объявления
-  var showOffer = function () {
+  var showOffer = function (dataindex) {
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
-    var randomAdv = window.data.createRandomAdv();
-    cardFragment.appendChild(window.card(randomAdv[0]));
-    window.pin.similarAdv.appendChild(cardFragment);
+    var randomCard = window.data.createRandomAdv();
+    // создает карточку по индексу пина
+    cardFragment.appendChild(window.card(randomCard[dataindex]));
 
+    window.pin.similarAdv.appendChild(cardFragment);
   };
 
   // <-------------------- 9. доверяй, но проверяй -------------------->
 
-  // var onPinClick = function (evt) {
-  //   var target = evt.target;
-  //   var isContainMainPin = evt.target.parentElement.classList.contains('map__pin--main');
-  //   if (target.tagName === 'IMG' && !isContainMainPin) {
-  //     showOffer();
-  //   }
-  // }
-
-  // map.addEventListener('click', onPinClick);
-
   // функция для однократной отрисовки карточки объявления
-  var getRenderedCard = function () {
+  var getRenderedCard = function (dataindex) {
     var cardPopup = map.querySelector('.popup');
     if (cardPopup) {
       cardPopup.remove();
     }
-    showOffer();
+    showOffer(dataindex);
+  };
+
+  // удаляет класс map__pin--active при переключении на другую карточку
+  var getActivePin = function () {
+    var activePin = map.querySelector('.map__pin--active');
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+  };
+
+  // скрывает карточку объявления и удаляет класс map__pin--active у пина
+  var cardAndActiveClassRemove = function () {
+    map.querySelector('.map__card').classList.add('hidden');
+    map.querySelector('.map__pin--active').classList.remove('map__pin--active');
   };
 
   // находит пин по которому был клик
   var onClickPin = function () {
     var addClickListener = function (mapPin) {
       mapPin.addEventListener('click', function () {
+        // удаляет класс map__pin--active при переключении на другую карточку
+        getActivePin();
+        // находит пин по дата атрибуту
+        var cardIndex = mapPin.getAttribute('data-index');
         mapPin.classList.add('map__pin--active');
-        getRenderedCard();
+        // отрисовывает карточку по индексу пина
+        getRenderedCard(cardIndex);
         // обработчик нажатия esc для закрытия карточки
         document.addEventListener('keydown', onEscClosePopup);
-        // обработчик нклика для закрытия карточки
+        // обработчик клика для закрытия карточки
         var closePopup = map.querySelector('.popup__close');
         closePopup.addEventListener('click', onClickClosePopup);
       });
@@ -129,22 +143,17 @@
     for (var j = 0; j < window.mapPins.length; j++) {
       var mapPin = window.mapPins[j];
       addClickListener(mapPin);
-      // onEscClosePopup(mapPin);
     }
-    // находит карточку-попап
-    var getCardPopup = function () {
-      return map.querySelector('.map__card');
-    };
 
     // закрывает карточку объявления по нажатию на Esc
-    var onEscClosePopup = function () {
-      if (window.utils.isEscPressed) {
-        getCardPopup().classList.add('hidden');
+    var onEscClosePopup = function (evt) {
+      if (evt.keyCode === window.utils.ESC_KEYCODE) {
+        cardAndActiveClassRemove();
       }
     };
     // закрывает карточку объявления по клику
     var onClickClosePopup = function () {
-      getCardPopup().classList.add('hidden');
+      cardAndActiveClassRemove();
     };
   };
 
@@ -152,3 +161,5 @@
     form: form
   };
 })();
+
+
