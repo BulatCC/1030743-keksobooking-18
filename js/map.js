@@ -72,17 +72,16 @@
       onShowMapAndForm();
     }
   });
+  // создет данные для вставки в шаблон пина и карточки объявления
+  var randomAdv = window.data.createRandomAdv();
 
   // отрисовывает пины на карте
   var createMapPins = function () {
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
-    var randomAdv = window.data.createRandomAdv();
-    window.randomAdv = randomAdv;
     for (var k = 0; k < window.data.ADV_NUMBER; k++) {
       fragment.appendChild(window.pin.createMapPin(randomAdv[k]));
     }
-
     window.pin.similarAdv.appendChild(fragment);
   };
 
@@ -91,8 +90,7 @@
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
     // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(window.randomAdv[dataindex]));
-
+    cardFragment.appendChild(window.card(randomAdv[dataindex]));
     window.pin.similarAdv.appendChild(cardFragment);
   };
 
