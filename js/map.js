@@ -78,6 +78,7 @@
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
     var randomAdv = window.data.createRandomAdv();
+    window.randomAdv = randomAdv;
     for (var k = 0; k < window.data.ADV_NUMBER; k++) {
       fragment.appendChild(window.pin.createMapPin(randomAdv[k]));
     }
@@ -89,9 +90,8 @@
   var showOffer = function (dataindex) {
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
-    var randomCard = window.data.createRandomAdv();
     // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(randomCard[dataindex]));
+    cardFragment.appendChild(window.card(window.randomAdv[dataindex]));
 
     window.pin.similarAdv.appendChild(cardFragment);
   };
@@ -161,5 +161,3 @@
     form: form
   };
 })();
-
-

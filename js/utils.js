@@ -35,11 +35,6 @@
     return evt.keyCode === ENTER_KEYCODE;
   };
 
-  // проверяет нажат ли Esc
-  var isEscPressed = function (evt) {
-    return evt.keyCode === ESC_KEYCODE;
-  };
-
   window.utils = {
     createRandomNumber: createRandomNumber,
     createRandomXAxis: createRandomXAxis,
@@ -48,7 +43,7 @@
     X_AXIS: X_AXIS,
     PIN_HEIGHT: PIN_HEIGHT,
     isEnterPressed: isEnterPressed,
-    isEscPressed: isEscPressed,
     ESC_KEYCODE: ESC_KEYCODE
   };
 })();
+
