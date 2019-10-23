@@ -3,6 +3,8 @@
 (function () {
   var X_AXIS = 1200;
   var PIN_HEIGHT = 70;
+  var ENTER_KEYCODE = 13;
+  var ESC_KEYCODE = 27;
 
   // создает случайное число в диапазоне 2 чисел
   var createRandomNumber = function (min, max) {
@@ -28,12 +30,20 @@
     return randomArr;
   };
 
+  // проверяет нажат ли Enter
+  var isEnterPressed = function (evt) {
+    return evt.keyCode === ENTER_KEYCODE;
+  };
+
   window.utils = {
     createRandomNumber: createRandomNumber,
     createRandomXAxis: createRandomXAxis,
     createRandomElement: createRandomElement,
     createRandomArr: createRandomArr,
     X_AXIS: X_AXIS,
-    PIN_HEIGHT: PIN_HEIGHT
+    PIN_HEIGHT: PIN_HEIGHT,
+    isEnterPressed: isEnterPressed,
+    ESC_KEYCODE: ESC_KEYCODE
   };
 })();
+

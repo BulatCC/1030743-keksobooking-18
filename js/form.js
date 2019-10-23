@@ -56,4 +56,51 @@
       guests.setCustomValidity('');
     }
   });
+
+  // <-------------------- 9. доверяй, но проверяй -------------------->
+
+  // поле выбора типа жилья
+  var placeType = window.map.form.querySelector('#type');
+
+  // поле ввода цены
+  var price = window.map.form.querySelector('#price');
+
+  // записывает атрибуты в поле «Цена»
+  var priceSet = function (pricenumber) {
+    price.min = pricenumber;
+    price.placeholder = pricenumber;
+  };
+
+  // синхронизирует поле «Тип жилья» с полем «Цена»
+  window.map.form.addEventListener('click', function () {
+    if (placeType.value === 'bungalo') {
+      priceSet(0);
+    } else if (placeType.value === 'flat') {
+      priceSet(1000);
+    } else if (placeType.value === 'house') {
+      priceSet(5000);
+    } else if (placeType.value === 'palace') {
+      priceSet(10000);
+    }
+  });
+
+  // поле заезда
+  var timeIn = window.map.form.querySelector('#timein');
+
+  // поле выезда
+  var timeOut = window.map.form.querySelector('#timeout');
+
+  // функция синхронизации время заезда и выезда
+  var validateTimeInOut = function (listIn, listOut) {
+    listOut.selectedIndex = listIn.selectedIndex;
+  };
+
+  timeIn.addEventListener('change', function () {
+    validateTimeInOut(timeIn, timeOut);
+  });
+
+  timeOut.addEventListener('change', function () {
+    validateTimeInOut(timeOut, timeIn);
+  });
+
 })();
