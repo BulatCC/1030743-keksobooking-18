@@ -38,10 +38,10 @@
       window.map.addressField.setAttribute('value', coordinatesForAdressField);
 
       // ограничивает границы перетаскивания основной метки
-      if (coordinatesY < MIN_HEIGHT) {
-        coordinatesY = MIN_HEIGHT;
-      } else if (coordinatesY > MAX_HEIGHT) {
-        coordinatesY = MAX_HEIGHT;
+      if (coordinatesY < MIN_HEIGHT - window.utils.PIN_HEIGHT) {
+        coordinatesY = MIN_HEIGHT - window.utils.PIN_HEIGHT;
+      } else if (coordinatesY > MAX_HEIGHT - window.utils.PIN_HEIGHT) {
+        coordinatesY = MAX_HEIGHT - window.utils.PIN_HEIGHT;
       }
 
       if (coordinatesX < MIN_WIDTH) {
