@@ -2,7 +2,7 @@
 
 (function () {
   var X_AXIS = 1200;
-  var PIN_HEIGHT = 70;
+  var PIN_HEIGHT = 80;
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
 

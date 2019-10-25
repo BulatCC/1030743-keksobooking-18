@@ -156,6 +156,9 @@
   };
 
   window.map = {
-    form: form
+    form: form,
+    mainPin: mainPin,
+    INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
+    addressField: addressField
   };
 })();
