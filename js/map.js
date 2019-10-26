@@ -36,12 +36,11 @@
   // добавляет координаты карты в неактивном состоянии
   addressField.setAttribute('value', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
 
-
   // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
     // условие для однократной отрисовки меток на карте
     if (!IS_PINS_RENDERED) {
-      createMapPins();
+      window.load(onSuccess, onError);
       map.classList.remove('map--faded');
       // записывает координаты метки в поле 'адрес'
       addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
@@ -51,16 +50,6 @@
       }
       IS_PINS_RENDERED = true;
     }
-    // находит пины на карте, кроме основной метки
-    var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
-    // выводит переменную в глобальную область видимости
-    window.mapPins = mapPins;
-    // добавляет дата-атрибуты пинам
-    for (var k = 0; k < window.data.ADV_NUMBER; k++) {
-      mapPins[k].setAttribute('data-index', k);
-    }
-    // отслеживает на какой пин был клик
-    onClickPin();
   };
 
   // активирует карту и форму по клику на основную метку
@@ -72,17 +61,39 @@
       onShowMapAndForm();
     }
   });
-  // создет данные для вставки в шаблон пина и карточки объявления
-  var randomAdv = window.data.createRandomAdv();
 
   // отрисовывает пины на карте
-  var createMapPins = function () {
+  var onSuccess = function (pindata) {
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
     for (var k = 0; k < window.data.ADV_NUMBER; k++) {
-      fragment.appendChild(window.pin.createMapPin(randomAdv[k]));
+      fragment.appendChild(window.pin.createMapPin(pindata[k]));
     }
     window.pin.similarAdv.appendChild(fragment);
+    // находит пины на карте, кроме основной метки
+    var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
+    // выводит переменную в глобальную область видимости
+    window.mapPins = mapPins;
+    // добавляет дата-атрибуты пинам
+    for (var j = 0; j < window.data.ADV_NUMBER; j++) {
+      mapPins[j].setAttribute('data-index', j);
+    }
+    // отслеживает на какой пин был клик
+    onClickPin();
+  };
+
+  // выводит сообщение об ошибке если данные не пришли
+  var onError = function () {
+    // клонирует шаблон сообщения об ошибке
+    var errorTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+    var mainTag = document.querySelector('main');
+    mainTag.appendChild(errorTemplate);
+    // находит кнопку 'поробовать снова' при возникновении ошибки
+    var errorButton = document.querySelector('.error__button');
+    errorButton.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      onShowMapAndForm();
+    });
   };
 
   // отрисовывает карточку объявления
@@ -90,11 +101,9 @@
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
     // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(randomAdv[dataindex]));
+    cardFragment.appendChild(window.card(window.serverData[dataindex]));
     window.pin.similarAdv.appendChild(cardFragment);
   };
-
-  // <-------------------- 9. доверяй, но проверяй -------------------->
 
   // функция для однократной отрисовки карточки объявления
   var getRenderedCard = function (dataindex) {
@@ -159,6 +168,7 @@
     form: form,
     mainPin: mainPin,
     INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
-    addressField: addressField
+    addressField: addressField,
+    onError: onError
   };
 })();
