@@ -15,17 +15,17 @@
       y: evt.clientY
     };
 
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
+    var onMouseMove = function (e) {
+      e.preventDefault();
       // координаты относительно начальной точки при каждом движении мыши
       var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
+        x: startCoords.x - e.clientX,
+        y: startCoords.y - e.clientY
       };
 
       startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
+        x: e.clientX,
+        y: e.clientY
       };
 
       var coordinatesY = window.map.mainPin.offsetTop - shift.y; // ↑
@@ -57,8 +57,8 @@
 
     };
     // удаляет обработчики mousedown и mousemove по событию mouseup
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
+    var onMouseUp = function (evt1) {
+      evt1.preventDefault();
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
