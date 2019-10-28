@@ -1,26 +1,24 @@
 'use strict';
 
 (function () {
-  var URL = 'https://js.dump.academy/keksobooking/data';
+  var URL = 'https://js.dump.academy/keksobooking';
 
-  window.load = function (success) {
+  window.upload = function (data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
-        success(xhr.response);
-        // данные для отрисовки карточки
-        var serverData = xhr.response;
-        window.serverData = serverData;
+        // если все норм, переводит страницу в неактивное состяние
+        window.map.resetMapAndForm();
       } else {
         // если все плохо, выводит ошибку
         window.messages.onError();
       }
     });
 
-    xhr.open('GET', URL);
-    xhr.send();
+    xhr.open('POST', URL);
+    xhr.send(data);
   };
 })();
 
