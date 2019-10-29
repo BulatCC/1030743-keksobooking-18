@@ -175,6 +175,7 @@
     map.classList.add('map--faded');
     addressField.setAttribute('value', '602, 407');
     window.messages.success();
+    IS_PINS_RENDERED = false;
   };
 
   window.map = {
