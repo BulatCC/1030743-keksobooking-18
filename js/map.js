@@ -40,7 +40,7 @@
   var onShowMapAndForm = function () {
     // условие для однократной отрисовки меток на карте
     if (!IS_PINS_RENDERED) {
-      window.load(onSuccess, onError);
+      window.load(onSuccess);
       map.classList.remove('map--faded');
       // записывает координаты метки в поле 'адрес'
       addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
@@ -82,20 +82,6 @@
     onClickPin();
   };
 
-  // выводит сообщение об ошибке если данные не пришли
-  var onError = function () {
-    // клонирует шаблон сообщения об ошибке
-    var errorTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-    var mainTag = document.querySelector('main');
-    mainTag.appendChild(errorTemplate);
-    // находит кнопку 'поробовать снова' при возникновении ошибки
-    var errorButton = document.querySelector('.error__button');
-    errorButton.addEventListener('click', function (evt) {
-      evt.preventDefault();
-      onShowMapAndForm();
-    });
-  };
-
   // отрисовывает карточку объявления
   var showOffer = function (dataindex) {
     // создает фрагмент с карточкой объявления для вставки в шаблон
@@ -105,12 +91,17 @@
     window.pin.similarAdv.appendChild(cardFragment);
   };
 
-  // функция для однократной отрисовки карточки объявления
-  var getRenderedCard = function (dataindex) {
+  // проверяет отрисована ли карточка попап
+  var isPopupRendered = function () {
     var cardPopup = map.querySelector('.popup');
     if (cardPopup) {
       cardPopup.remove();
     }
+  };
+
+  // функция для однократной отрисовки карточки объявления
+  var getRenderedCard = function (dataindex) {
+    isPopupRendered();
     showOffer(dataindex);
   };
 
@@ -146,6 +137,7 @@
         closePopup.addEventListener('click', onClickClosePopup);
       });
     };
+
     // находит пин по которму был клик
     for (var j = 0; j < window.mapPins.length; j++) {
       var mapPin = window.mapPins[j];
@@ -164,11 +156,33 @@
     };
   };
 
+  // отправляет данные формы без перезагрузки страницы
+  form.addEventListener('submit', function (evt) {
+    window.upload(new FormData(form), function () {
+    });
+    evt.preventDefault();
+  });
+
+  // переводит страницу в неактивное состяние
+  var resetMapAndForm = function () {
+    isPopupRendered();
+    form.reset();
+    window.mapPins.forEach(function (item) {
+      item.remove();
+    });
+    mainPin.style.top = '375px';
+    mainPin.style.left = '570px';
+    map.classList.add('map--faded');
+    addressField.setAttribute('value', '602, 407');
+    window.messages.success();
+    IS_PINS_RENDERED = false;
+  };
+
   window.map = {
     form: form,
     mainPin: mainPin,
     INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
     addressField: addressField,
-    onError: onError
+    resetMapAndForm: resetMapAndForm
   };
 })();
