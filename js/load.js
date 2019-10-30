@@ -3,16 +3,15 @@
 (function () {
   var URL = 'https://js.dump.academy/keksobooking/data';
 
-  window.load = function (success) {
+  window.load = function () {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
-        success(xhr.response);
         // данные для отрисовки карточки
-        var serverData = xhr.response;
-        window.serverData = serverData;
+        window.serverData = xhr.response;
+
       } else {
         // если все плохо, выводит ошибку
         window.messages.onError();

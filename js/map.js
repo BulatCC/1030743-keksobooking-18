@@ -2,7 +2,8 @@
 
 (function () {
   var INACTIVE_HALF_MAIN_PIN_SIZE = 32;
-  var IS_PINS_RENDERED = false; // переменная для провеки условия отрисовки меток
+  var IS_PINS_RENDERED = false; // переменная для провеки условия отрисовки
+  var ADV_NUMBER = 5; //  количество объявлений
 
   // карта
   var map = document.querySelector('.map');
@@ -36,11 +37,20 @@
   // добавляет координаты карты в неактивном состоянии
   addressField.setAttribute('value', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
 
+  // форма с филтрами
+  var filters = map.querySelector('.map__filters');
+
+  // тип жилья
+  var filterPlaceType = filters.querySelector('#housing-type');
+
   // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
     // условие для однократной отрисовки меток на карте
     if (!IS_PINS_RENDERED) {
-      window.load(onSuccess);
+      // сохраняет в перемнную данные с сервера
+      window.filter.comparing();
+      // отрисовывает пины с учетом фильтации (так должно быть, но пока не работает)
+      onSuccess(window.compared);
       map.classList.remove('map--faded');
       // записывает координаты метки в поле 'адрес'
       addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
@@ -48,12 +58,17 @@
       for (var j = 0; j < fieldsets.length; j++) {
         fieldsets[j].removeAttribute('disabled');
       }
-      IS_PINS_RENDERED = true;
+      IS_PINS_RENDERED = true; // тут проблема с отрисовкой, если убрать тогда отрисовывает при каждом взаимодействии
     }
   };
 
   // активирует карту и форму по клику на основную метку
   mainPin.addEventListener('mousedown', onShowMapAndForm);
+
+  // отрисовывает метки при изменении фильтра, точнее так должно быть, но не работает=)
+  filterPlaceType.addEventListener('change', function () {
+    onShowMapAndForm();
+  });
 
   // активирует карту и форму по нажатию enter на основную метку
   mainPin.addEventListener('keydown', function () {
@@ -66,7 +81,7 @@
   var onSuccess = function (pindata) {
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < window.data.ADV_NUMBER; k++) {
+    for (var k = 0; k < ADV_NUMBER; k++) {
       fragment.appendChild(window.pin.createMapPin(pindata[k]));
     }
     window.pin.similarAdv.appendChild(fragment);
@@ -75,7 +90,7 @@
     // выводит переменную в глобальную область видимости
     window.mapPins = mapPins;
     // добавляет дата-атрибуты пинам
-    for (var j = 0; j < window.data.ADV_NUMBER; j++) {
+    for (var j = 0; j < ADV_NUMBER; j++) {
       mapPins[j].setAttribute('data-index', j);
     }
     // отслеживает на какой пин был клик
@@ -183,6 +198,7 @@
     mainPin: mainPin,
     INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
     addressField: addressField,
-    resetMapAndForm: resetMapAndForm
+    resetMapAndForm: resetMapAndForm,
+    filterPlaceType: filterPlaceType
   };
 })();
