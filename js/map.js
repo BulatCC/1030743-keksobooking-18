@@ -2,8 +2,6 @@
 
 (function () {
   var INACTIVE_HALF_MAIN_PIN_SIZE = 32;
-  var IS_PINS_RENDERED = false; // переменная для провеки условия отрисовки
-  var ADV_NUMBER = 5; //  количество объявлений
 
   // карта
   var map = document.querySelector('.map');
@@ -45,30 +43,23 @@
 
   // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
-    // условие для однократной отрисовки меток на карте
-    if (!IS_PINS_RENDERED) {
-      // сохраняет в перемнную данные с сервера
-      window.filter.comparing();
-      // отрисовывает пины с учетом фильтации (так должно быть, но пока не работает)
-      onSuccess(window.compared);
-      map.classList.remove('map--faded');
-      // записывает координаты метки в поле 'адрес'
-      addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
-      form.classList.remove('ad-form--disabled');
-      for (var j = 0; j < fieldsets.length; j++) {
-        fieldsets[j].removeAttribute('disabled');
-      }
-      IS_PINS_RENDERED = true; // тут проблема с отрисовкой, если убрать тогда отрисовывает при каждом взаимодействии
+    // сохраняет в перемнную данные с сервера
+    window.filter.comparing();
+    // отрисовывает пины с учетом фильтации (так должно быть, но пока не работает)
+    onSuccess(window.compared);
+    map.classList.remove('map--faded');
+    // записывает координаты метки в поле 'адрес'
+    addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
+    form.classList.remove('ad-form--disabled');
+    for (var j = 0; j < fieldsets.length; j++) {
+      fieldsets[j].removeAttribute('disabled');
     }
   };
 
+  filterPlaceType.addEventListener('change', onShowMapAndForm);
+
   // активирует карту и форму по клику на основную метку
   mainPin.addEventListener('mousedown', onShowMapAndForm);
-
-  // отрисовывает метки при изменении фильтра, точнее так должно быть, но не работает=)
-  filterPlaceType.addEventListener('change', function () {
-    onShowMapAndForm();
-  });
 
   // активирует карту и форму по нажатию enter на основную метку
   mainPin.addEventListener('keydown', function () {
@@ -77,25 +68,29 @@
     }
   });
 
+
   // отрисовывает пины на карте
   var onSuccess = function (pindata) {
+    // отчищает div перед отрисовкой
+    window.pin.similarAdv.innerHTML = '';
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < ADV_NUMBER; k++) {
+    for (var k = 0; k < window.compared.length; k++) {
       fragment.appendChild(window.pin.createMapPin(pindata[k]));
     }
-    window.pin.similarAdv.appendChild(fragment);
+    window.pin.similarAdv.append(fragment);
     // находит пины на карте, кроме основной метки
     var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
     // выводит переменную в глобальную область видимости
     window.mapPins = mapPins;
     // добавляет дата-атрибуты пинам
-    for (var j = 0; j < ADV_NUMBER; j++) {
+    for (var j = 0; j < window.compared.length; j++) {
       mapPins[j].setAttribute('data-index', j);
     }
     // отслеживает на какой пин был клик
     onClickPin();
   };
+
 
   // отрисовывает карточку объявления
   var showOffer = function (dataindex) {
@@ -190,7 +185,6 @@
     map.classList.add('map--faded');
     addressField.setAttribute('value', '602, 407');
     window.messages.success();
-    IS_PINS_RENDERED = false;
   };
 
   window.map = {
@@ -199,6 +193,7 @@
     INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
     addressField: addressField,
     resetMapAndForm: resetMapAndForm,
-    filterPlaceType: filterPlaceType
+    filterPlaceType: filterPlaceType,
+    onShowMapAndForm: onShowMapAndForm
   };
 })();
