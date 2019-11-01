@@ -10,8 +10,7 @@
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         // данные для отрисовки карточки
-        window.serverData = xhr.response.slice(0, 5);
-
+        window.serverData = xhr.response;
       } else {
         // если все плохо, выводит ошибку
         window.messages.onError();
