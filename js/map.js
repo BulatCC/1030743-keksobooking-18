@@ -97,7 +97,7 @@
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
     // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(window.serverData[dataindex]));
+    cardFragment.appendChild(window.card(window.compared[dataindex]));
     window.pin.similarAdv.appendChild(cardFragment);
   };
 
@@ -131,12 +131,12 @@
 
   // находит пин по которому был клик
   var onClickPin = function () {
-    var addClickListener = function (mapPin) {
+    var addClickListener = function (mappin) {
       mapPin.addEventListener('click', function () {
         // удаляет класс map__pin--active при переключении на другую карточку
         getActivePin();
         // находит пин по дата атрибуту
-        var cardIndex = mapPin.getAttribute('data-index');
+        var cardIndex = mappin.getAttribute('data-index');
         mapPin.classList.add('map__pin--active');
         // отрисовывает карточку по индексу пина
         getRenderedCard(cardIndex);
