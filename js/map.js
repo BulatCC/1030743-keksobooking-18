@@ -2,7 +2,6 @@
 
 (function () {
   var INACTIVE_HALF_MAIN_PIN_SIZE = 32;
-  var IS_PINS_RENDERED = false; // переменная для провеки условия отрисовки меток
 
   // карта
   var map = document.querySelector('.map');
@@ -36,21 +35,28 @@
   // добавляет координаты карты в неактивном состоянии
   addressField.setAttribute('value', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
 
+  // форма с филтрами
+  var filters = map.querySelector('.map__filters');
+
+  // тип жилья
+  var filterPlaceType = filters.querySelector('#housing-type');
+
   // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
-    // условие для однократной отрисовки меток на карте
-    if (!IS_PINS_RENDERED) {
-      window.load(onSuccess);
-      map.classList.remove('map--faded');
-      // записывает координаты метки в поле 'адрес'
-      addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
-      form.classList.remove('ad-form--disabled');
-      for (var j = 0; j < fieldsets.length; j++) {
-        fieldsets[j].removeAttribute('disabled');
-      }
-      IS_PINS_RENDERED = true;
+    // сохраняет в перемнную данные с сервера
+    window.filter.comparing();
+    // отрисовывает пины с учетом фильтации (так должно быть, но пока не работает)
+    onSuccess(window.compared);
+    map.classList.remove('map--faded');
+    // записывает координаты метки в поле 'адрес'
+    addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
+    form.classList.remove('ad-form--disabled');
+    for (var j = 0; j < fieldsets.length; j++) {
+      fieldsets[j].removeAttribute('disabled');
     }
   };
+
+  filterPlaceType.addEventListener('change', onShowMapAndForm);
 
   // активирует карту и форму по клику на основную метку
   mainPin.addEventListener('mousedown', onShowMapAndForm);
@@ -62,32 +68,36 @@
     }
   });
 
+
   // отрисовывает пины на карте
   var onSuccess = function (pindata) {
+    // отчищает div перед отрисовкой
+    window.pin.similarAdv.innerHTML = '';
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < window.data.ADV_NUMBER; k++) {
+    for (var k = 0; k < window.compared.length; k++) {
       fragment.appendChild(window.pin.createMapPin(pindata[k]));
     }
-    window.pin.similarAdv.appendChild(fragment);
+    window.pin.similarAdv.append(fragment);
     // находит пины на карте, кроме основной метки
     var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
     // выводит переменную в глобальную область видимости
     window.mapPins = mapPins;
     // добавляет дата-атрибуты пинам
-    for (var j = 0; j < window.data.ADV_NUMBER; j++) {
+    for (var j = 0; j < window.compared.length; j++) {
       mapPins[j].setAttribute('data-index', j);
     }
     // отслеживает на какой пин был клик
     onClickPin();
   };
 
+
   // отрисовывает карточку объявления
   var showOffer = function (dataindex) {
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
     // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(window.serverData[dataindex]));
+    cardFragment.appendChild(window.card(window.compared[dataindex]));
     window.pin.similarAdv.appendChild(cardFragment);
   };
 
@@ -121,12 +131,12 @@
 
   // находит пин по которому был клик
   var onClickPin = function () {
-    var addClickListener = function (mapPin) {
+    var addClickListener = function (mappin) {
       mapPin.addEventListener('click', function () {
         // удаляет класс map__pin--active при переключении на другую карточку
         getActivePin();
         // находит пин по дата атрибуту
-        var cardIndex = mapPin.getAttribute('data-index');
+        var cardIndex = mappin.getAttribute('data-index');
         mapPin.classList.add('map__pin--active');
         // отрисовывает карточку по индексу пина
         getRenderedCard(cardIndex);
@@ -175,7 +185,6 @@
     map.classList.add('map--faded');
     addressField.setAttribute('value', '602, 407');
     window.messages.success();
-    IS_PINS_RENDERED = false;
   };
 
   window.map = {
@@ -183,6 +192,8 @@
     mainPin: mainPin,
     INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
     addressField: addressField,
-    resetMapAndForm: resetMapAndForm
+    resetMapAndForm: resetMapAndForm,
+    filterPlaceType: filterPlaceType,
+    onShowMapAndForm: onShowMapAndForm
   };
 })();

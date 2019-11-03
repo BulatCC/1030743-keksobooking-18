@@ -20,9 +20,9 @@
     });
   };
 
-  // выводит и скрывает сообщение об ошибке если ошибка сервера
+  // выводит и скрывает сообщение что все ок
   var success = function () {
-  // клонирует шаблон сообщения об ошибке
+  // клонирует шаблон сообщения об успехе
     var successTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
     mainTag.appendChild(successTemplate);
     var successMessage = mainTag.querySelector('.success');

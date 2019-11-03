@@ -5,7 +5,7 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   // находит место в разметке куда надо вставить шаблон пина
-  var similarAdv = document.querySelector('.map__pins');
+  var similarAdv = document.querySelector('.map__pins-adv');
 
   // создает метку для карты
   var createMapPin = function (adv) {
