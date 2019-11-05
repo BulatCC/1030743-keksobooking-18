@@ -35,16 +35,10 @@
   // добавляет координаты карты в неактивном состоянии
   addressField.setAttribute('value', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
 
-  // форма с филтрами
-  var filters = map.querySelector('.map__filters');
-
-  // тип жилья
-  var filterPlaceType = filters.querySelector('#housing-type');
-
   // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
     // сохраняет в перемнную данные с сервера
-    window.filter.comparing();
+    window.filter.comparing(window.serverData);
     // отрисовывает пины с учетом фильтации (так должно быть, но пока не работает)
     onSuccess(window.compared);
     map.classList.remove('map--faded');
@@ -55,8 +49,6 @@
       fieldsets[j].removeAttribute('disabled');
     }
   };
-
-  filterPlaceType.addEventListener('change', onShowMapAndForm);
 
   // активирует карту и форму по клику на основную метку
   mainPin.addEventListener('mousedown', onShowMapAndForm);
@@ -75,7 +67,7 @@
     window.pin.similarAdv.innerHTML = '';
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < window.compared.length; k++) {
+    for (var k = 0; k < window.compared.length; k++) { // !!!!!потом исправить
       fragment.appendChild(window.pin.createMapPin(pindata[k]));
     }
     window.pin.similarAdv.append(fragment);
@@ -84,7 +76,7 @@
     // выводит переменную в глобальную область видимости
     window.mapPins = mapPins;
     // добавляет дата-атрибуты пинам
-    for (var j = 0; j < window.compared.length; j++) {
+    for (var j = 0; j < window.compared.length; j++) { // !!!!!потом исправить
       mapPins[j].setAttribute('data-index', j);
     }
     // отслеживает на какой пин был клик
@@ -97,7 +89,7 @@
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
     // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(window.compared[dataindex]));
+    cardFragment.appendChild(window.card(window.compared[dataindex])); // !!!!!потом исправить
     window.pin.similarAdv.appendChild(cardFragment);
   };
 
@@ -193,7 +185,7 @@
     INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
     addressField: addressField,
     resetMapAndForm: resetMapAndForm,
-    filterPlaceType: filterPlaceType,
-    onShowMapAndForm: onShowMapAndForm
+    onShowMapAndForm: onShowMapAndForm,
+    map: map
   };
 })();
