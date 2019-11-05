@@ -9,7 +9,7 @@
   var filterPrice = filters.querySelector('#housing-price');
   var filterRoomsQuantity = filters.querySelector('#housing-rooms');
   var filterGuestsQuantity = filters.querySelector('#housing-guests');
-  var filterFeatures = filters.querySelector('#housing-features');
+
 
   // значение цен
   var PriceValue = {
@@ -20,12 +20,8 @@
     MAX: 50000
   };
 
-  // обработчики событий реагирующие на изменеия параметров фильтра
+  // обработчик событий реагирующие на изменеия параметров фильтра
   filters.addEventListener('change', window.map.onShowMapAndForm);
-  // filterPrice.addEventListener('change', window.map.onShowMapAndForm);
-  // filterRoomsQuantity.addEventListener('change', window.map.onShowMapAndForm);
-  // filterGuestsQuantity.addEventListener('change', window.map.onShowMapAndForm);
-  // window.filterFeatures.addEventListener('change', window.map.onShowMapAndForm);
 
   // функция для фильтрации по типу жилья
   var placeFiltration = function (item) {
@@ -67,23 +63,29 @@
     }
   };
 
+  // var filterFeatures = filters.querySelector('#housing-features');
+
   // функция для фильтрации по фичам
   // почемуто не работает
-  var featuresFiltration = function (item) { // получает данные с сервера для фильтрования аргументом
-    Array.from(filterFeatures.querySelectorAll(':checked')) // находит все выбранные чекбоксы и пребразует их в массив
-    .filter(function (feature) { // создает массив с выбранными чекбоксами
-      return feature.value;
-    })
-    .map(function (feature) { // создает отфилтрованный массив в нужном формате
-      return feature.value === item.offer.features; // <<<<<<<<------------проблема тут
-    });
-  };
+  // var featuresFiltration = function (item) { // получает данные с сервера для фильтрования аргументом
+  //   Array.from(filterFeatures.querySelectorAll(':checked')) // находит все выбранные чекбоксы и пребразует их в массив
+  //   .filter(function (feature) { // создает массив с выбранными чекбоксами
+  //     return feature.value;
+  //   })
+  //   .map(function (feature) { // создает отфилтрованный массив в нужном формате
+  //     return feature.value === item.offer.features; // <<<<<<<<------------проблема тут
+  //   });
+  // };
 
   // фильтрует данные для отрисовки
   var comparing = function (data) {
     window.compared = data.filter(function (item) {
       return (
-        placeFiltration(item) && roomsFiltration(item) && priceFiltration(item) && guestsFiltration(item) && featuresFiltration(item)
+        placeFiltration(item)
+        && roomsFiltration(item)
+        && priceFiltration(item)
+        && guestsFiltration(item)
+        // && featuresFiltration(item)
       );
     }).slice(0, 5);
   };
