@@ -21,8 +21,14 @@
     MAX: 50000
   };
 
+  // устранения "дребезга"
+  var onFilterChange = window.debounce(function () {
+    comparing(window.serverData);
+    window.map.onSuccess(window.compared);
+  });
+
   // обработчик событий реагирующие на изменеия параметров фильтра
-  filters.addEventListener('change', window.map.onShowMapAndForm);
+  filters.addEventListener('change', onFilterChange);
 
   // функция для фильтрации по типу жилья
   var placeFiltration = function (item) {
@@ -64,16 +70,20 @@
     }
   };
 
-  // функция для фильтрации по фичам, не смог передать значения для отрисовки
-  var featuresFiltration = function () {
+  // функция для фильтрации по фичам
+  var featuresFiltration = function (item) {
     return Array.from(filterFeatures.querySelectorAll(':checked'))
       .filter(function (feature) {
         return feature.value;
       })
       .map(function (feature) {
         return feature.value;
+      })
+      .every(function (feature) {
+        return item.offer.features.includes(feature);
       });
   };
+
 
   // фильтрует данные для отрисовки
   var comparing = function (data) {

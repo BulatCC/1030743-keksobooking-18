@@ -39,7 +39,7 @@
   var onShowMapAndForm = function () {
     // сохраняет в перемнную данные с сервера
     window.filter.comparing(window.serverData);
-    // отрисовывает пины с учетом фильтации (так должно быть, но пока не работает)
+    // отрисовывает пины с учетом фильтации
     onSuccess(window.compared);
     map.classList.remove('map--faded');
     // записывает координаты метки в поле 'адрес'
@@ -48,6 +48,7 @@
     for (var j = 0; j < fieldsets.length; j++) {
       fieldsets[j].removeAttribute('disabled');
     }
+    mainPin.removeEventListener('mousedown', onShowMapAndForm);
   };
 
   // активирует карту и форму по клику на основную метку
@@ -186,6 +187,7 @@
     addressField: addressField,
     resetMapAndForm: resetMapAndForm,
     onShowMapAndForm: onShowMapAndForm,
-    map: map
+    map: map,
+    onSuccess: onSuccess
   };
 })();
