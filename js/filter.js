@@ -9,6 +9,7 @@
   var filterPrice = filters.querySelector('#housing-price');
   var filterRoomsQuantity = filters.querySelector('#housing-rooms');
   var filterGuestsQuantity = filters.querySelector('#housing-guests');
+  var filterFeatures = filters.querySelector('#housing-features');
 
 
   // значение цен
@@ -63,19 +64,16 @@
     }
   };
 
-  // var filterFeatures = filters.querySelector('#housing-features');
-
-  // функция для фильтрации по фичам
-  // почемуто не работает
-  // var featuresFiltration = function (item) { // получает данные с сервера для фильтрования аргументом
-  //   Array.from(filterFeatures.querySelectorAll(':checked')) // находит все выбранные чекбоксы и пребразует их в массив
-  //   .filter(function (feature) { // создает массив с выбранными чекбоксами
-  //     return feature.value;
-  //   })
-  //   .map(function (feature) { // создает отфилтрованный массив в нужном формате
-  //     return feature.value === item.offer.features; // <<<<<<<<------------проблема тут
-  //   });
-  // };
+  // функция для фильтрации по фичам, не смог передать значения для отрисовки
+  var featuresFiltration = function () {
+    return Array.from(filterFeatures.querySelectorAll(':checked'))
+      .filter(function (feature) {
+        return feature.value;
+      })
+      .map(function (feature) {
+        return feature.value;
+      });
+  };
 
   // фильтрует данные для отрисовки
   var comparing = function (data) {
@@ -85,7 +83,7 @@
         && roomsFiltration(item)
         && priceFiltration(item)
         && guestsFiltration(item)
-        // && featuresFiltration(item)
+        && featuresFiltration(item)
       );
     }).slice(0, 5);
   };
