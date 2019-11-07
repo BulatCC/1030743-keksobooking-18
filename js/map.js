@@ -9,11 +9,14 @@
   // форма
   var form = document.querySelector('.ad-form');
 
-  // добавляет атрибут 'disabled' форме
+  // поля формы
   var fieldsets = document.querySelectorAll('fieldset');
-  for (var i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].setAttribute('disabled', '');
-  }
+
+  // фильтры
+  var filters = map.querySelectorAll('.map__filter');
+
+  // чекбоксы в фильтре
+  var filterCheckboxes = map.querySelectorAll('.map__checkbox');
 
   // основная метка в разметке
   var mainPin = document.querySelector('.map__pin--main');
@@ -27,6 +30,9 @@
   // координаты цифрами с помощью регулярного выражения
   var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 
+  // кнопка сброса формы
+  var formResetButton = form.querySelector('.ad-form__reset');
+
   // координаты основной метки
   var getCoordinatesPin = function (pin) {
     return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + pin].join(', ');
@@ -34,6 +40,20 @@
 
   // добавляет координаты карты в неактивном состоянии
   addressField.setAttribute('value', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
+
+  // добавляет атрибут 'disabled' форме, фильтру и сбрасывает чекбоксы
+  var fieldsetsDisabler = function () {
+    fieldsets.forEach(function (item) {
+      item.setAttribute('disabled', '');
+    });
+    filters.forEach(function (item) {
+      item.setAttribute('disabled', '');
+    });
+    filterCheckboxes.forEach(function (item) {
+      item.checked = false;
+    });
+  };
+  fieldsetsDisabler();
 
   // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
@@ -48,7 +68,11 @@
     for (var j = 0; j < fieldsets.length; j++) {
       fieldsets[j].removeAttribute('disabled');
     }
+    filters.forEach(function (item) {
+      item.removeAttribute('disabled', '');
+    });
     mainPin.removeEventListener('mousedown', onShowMapAndForm);
+    formResetButton.addEventListener('click', resetMapAndForm);
   };
 
   // активирует карту и форму по клику на основную метку
@@ -168,8 +192,12 @@
     mainPin.style.top = '375px';
     mainPin.style.left = '570px';
     map.classList.add('map--faded');
+    form.classList.add('ad-form--disabled');
     addressField.setAttribute('value', '602, 407');
+    fieldsetsDisabler();
     window.messages.success();
+    mainPin.addEventListener('mousedown', onShowMapAndForm);
+    formResetButton.removeEventListener('click', resetMapAndForm);
   };
 
   window.map = {
@@ -180,6 +208,7 @@
     resetMapAndForm: resetMapAndForm,
     onShowMapAndForm: onShowMapAndForm,
     map: map,
-    onSuccess: onSuccess
+    onSuccess: onSuccess,
+    filterCheckboxes: filterCheckboxes
   };
 })();

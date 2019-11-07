@@ -3,6 +3,8 @@
 (function () {
 // загружает данные с сервера
   window.load();
+  var MAX_PIN_NUMBER = 5;
+
   // находит расположение фильтров в разметке
   var filters = window.map.map.querySelector('.map__filters');
   var filterPlaceType = filters.querySelector('#housing-type');
@@ -10,7 +12,6 @@
   var filterRoomsQuantity = filters.querySelector('#housing-rooms');
   var filterGuestsQuantity = filters.querySelector('#housing-guests');
   var filterFeatures = filters.querySelector('#housing-features');
-
 
   // значение цен
   var PriceValue = {
@@ -95,7 +96,7 @@
         && guestsFiltration(item)
         && featuresFiltration(item)
       );
-    }).slice(0, 5);
+    }).slice(0, MAX_PIN_NUMBER);
   };
 
   window.filter = {
