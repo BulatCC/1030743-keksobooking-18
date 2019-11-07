@@ -61,7 +61,6 @@
     }
   });
 
-
   // отрисовывает пины на карте
   var onSuccess = function (pindata) {
     // отчищает div перед отрисовкой
@@ -83,7 +82,6 @@
     // отслеживает на какой пин был клик
     onClickPin();
   };
-
 
   // отрисовывает карточку объявления
   var showOffer = function (dataindex) {
@@ -124,13 +122,13 @@
 
   // находит пин по которому был клик
   var onClickPin = function () {
-    var addClickListener = function (mappin) {
-      mapPin.addEventListener('click', function () {
+    window.mapPins.forEach(function (mappin){
+      mappin.addEventListener('click', function () {
         // удаляет класс map__pin--active при переключении на другую карточку
         getActivePin();
         // находит пин по дата атрибуту
         var cardIndex = mappin.getAttribute('data-index');
-        mapPin.classList.add('map__pin--active');
+        mappin.classList.add('map__pin--active');
         // отрисовывает карточку по индексу пина
         getRenderedCard(cardIndex);
         // обработчик нажатия esc для закрытия карточки
@@ -139,13 +137,7 @@
         var closePopup = map.querySelector('.popup__close');
         closePopup.addEventListener('click', onClickClosePopup);
       });
-    };
-
-    // находит пин по которму был клик
-    for (var j = 0; j < window.mapPins.length; j++) {
-      var mapPin = window.mapPins[j];
-      addClickListener(mapPin);
-    }
+    });
 
     // закрывает карточку объявления по нажатию на Esc
     var onEscClosePopup = function (evt) {
