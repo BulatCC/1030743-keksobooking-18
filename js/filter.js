@@ -22,6 +22,21 @@
     MAX: 50000
   };
 
+  // чекбоксы реагируют на нажатие enter
+  var onEnterCheckboxPress = function (arr) {
+    arr.forEach(function (item) {
+      item.addEventListener('keyup', function (evt) {
+        if (evt.keyCode === window.utils.ENTER_KEYCODE) {
+          event.preventDefault();
+          item.click();
+        }
+      });
+    });
+  };
+
+  onEnterCheckboxPress(window.map.filterCheckboxes);
+
+
   // устранения "дребезга"
   var onFilterChange = window.debounce(function () {
     comparing(window.serverData);
@@ -100,6 +115,7 @@
   };
 
   window.filter = {
-    comparing: comparing
+    comparing: comparing,
+    onEnterCheckboxPress: onEnterCheckboxPress
   };
 })();

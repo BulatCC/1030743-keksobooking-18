@@ -43,7 +43,8 @@
     X_AXIS: X_AXIS,
     PIN_HEIGHT: PIN_HEIGHT,
     isEnterPressed: isEnterPressed,
-    ESC_KEYCODE: ESC_KEYCODE
+    ESC_KEYCODE: ESC_KEYCODE,
+    ENTER_KEYCODE: ENTER_KEYCODE
   };
 })();
 
