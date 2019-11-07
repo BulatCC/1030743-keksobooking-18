@@ -122,7 +122,7 @@
 
   // находит пин по которому был клик
   var onClickPin = function () {
-    window.mapPins.forEach(function (mappin){
+    window.mapPins.forEach(function (mappin) {
       mappin.addEventListener('click', function () {
         // удаляет класс map__pin--active при переключении на другую карточку
         getActivePin();
