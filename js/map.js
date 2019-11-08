@@ -2,46 +2,24 @@
 
 (function () {
   var INACTIVE_HALF_MAIN_PIN_SIZE = 32;
-
-  // карта
   var map = document.querySelector('.map');
-
-  // форма
   var form = document.querySelector('.ad-form');
-
-  // поля формы
   var fieldsets = document.querySelectorAll('fieldset');
-
-  // фильтры
   var filters = map.querySelectorAll('.map__filter');
-
-  // чекбоксы в фильтре
   var filterCheckboxes = map.querySelectorAll('.map__checkbox');
-
-  // основная метка в разметке
   var mainPin = document.querySelector('.map__pin--main');
-
-  // считывает координаты основной метки
   var mainPinCoordinates = mainPin.getAttribute('style');
-
-  // поле ввода адреса (координат)
   var addressField = document.querySelector('#address');
-
-  // координаты цифрами с помощью регулярного выражения
   var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
-
-  // кнопка сброса формы
   var formResetButton = form.querySelector('.ad-form__reset');
+  var mapFilters = map.querySelectorAll('.map__filter');
 
-  // координаты основной метки
   var getCoordinatesPin = function (pin) {
     return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + pin].join(', ');
   };
 
-  // добавляет координаты карты в неактивном состоянии
   addressField.setAttribute('value', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
 
-  // добавляет атрибут 'disabled' форме, фильтру и сбрасывает чекбоксы
   var fieldsetsDisabler = function () {
     fieldsets.forEach(function (item) {
       item.setAttribute('disabled', '');
@@ -55,14 +33,10 @@
   };
   fieldsetsDisabler();
 
-  // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
-    // сохраняет в перемнную данные с сервера
     window.filter.comparing(window.serverData);
-    // отрисовывает пины с учетом фильтации
     onSuccess(window.compared);
     map.classList.remove('map--faded');
-    // записывает координаты метки в поле 'адрес'
     addressField.setAttribute('placeholder', getCoordinatesPin(window.utils.PIN_HEIGHT));
     form.classList.remove('ad-form--disabled');
     for (var j = 0; j < fieldsets.length; j++) {
@@ -73,50 +47,38 @@
     });
     mainPin.removeEventListener('mousedown', onShowMapAndForm);
     formResetButton.addEventListener('click', resetMapAndForm);
+    window.filter.filterFeatures.addEventListener('keydown', window.filter.onEnterCheckboxPress);
   };
 
-  // активирует карту и форму по клику на основную метку
   mainPin.addEventListener('mousedown', onShowMapAndForm);
 
-  // активирует карту и форму по нажатию enter на основную метку
   mainPin.addEventListener('keydown', function () {
     if (window.utils.isEnterPressed) {
       onShowMapAndForm();
     }
   });
 
-  // отрисовывает пины на карте
   var onSuccess = function (pindata) {
-    // отчищает div перед отрисовкой
     window.pin.similarAdv.innerHTML = '';
-    // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < window.compared.length; k++) { // !!!!!потом исправить
+    for (var k = 0; k < window.compared.length; k++) {
       fragment.appendChild(window.pin.createMapPin(pindata[k]));
     }
     window.pin.similarAdv.append(fragment);
-    // находит пины на карте, кроме основной метки
     var mapPins = map.querySelectorAll('.map__pin:not(.map__pin--main)');
-    // выводит переменную в глобальную область видимости
     window.mapPins = mapPins;
-    // добавляет дата-атрибуты пинам
-    for (var j = 0; j < window.compared.length; j++) { // !!!!!потом исправить
+    for (var j = 0; j < window.compared.length; j++) {
       mapPins[j].setAttribute('data-index', j);
     }
-    // отслеживает на какой пин был клик
     onClickPin();
   };
 
-  // отрисовывает карточку объявления
   var showOffer = function (dataindex) {
-    // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
-    // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(window.compared[dataindex])); // !!!!!потом исправить
+    cardFragment.appendChild(window.card(window.compared[dataindex]));
     window.pin.similarAdv.appendChild(cardFragment);
   };
 
-  // проверяет отрисована ли карточка попап
   var isPopupRendered = function () {
     var cardPopup = map.querySelector('.popup');
     if (cardPopup) {
@@ -124,13 +86,11 @@
     }
   };
 
-  // функция для однократной отрисовки карточки объявления
   var getRenderedCard = function (dataindex) {
     isPopupRendered();
     showOffer(dataindex);
   };
 
-  // удаляет класс map__pin--active при переключении на другую карточку
   var getActivePin = function () {
     var activePin = map.querySelector('.map__pin--active');
     if (activePin) {
@@ -138,51 +98,41 @@
     }
   };
 
-  // скрывает карточку объявления и удаляет класс map__pin--active у пина
   var cardAndActiveClassRemove = function () {
     map.querySelector('.map__card').classList.add('hidden');
     map.querySelector('.map__pin--active').classList.remove('map__pin--active');
   };
 
-  // находит пин по которому был клик
   var onClickPin = function () {
     window.mapPins.forEach(function (mappin) {
       mappin.addEventListener('click', function () {
-        // удаляет класс map__pin--active при переключении на другую карточку
         getActivePin();
-        // находит пин по дата атрибуту
         var cardIndex = mappin.getAttribute('data-index');
         mappin.classList.add('map__pin--active');
-        // отрисовывает карточку по индексу пина
         getRenderedCard(cardIndex);
-        // обработчик нажатия esc для закрытия карточки
         document.addEventListener('keydown', onEscClosePopup);
-        // обработчик клика для закрытия карточки
         var closePopup = map.querySelector('.popup__close');
         closePopup.addEventListener('click', onClickClosePopup);
       });
     });
 
-    // закрывает карточку объявления по нажатию на Esc
     var onEscClosePopup = function (evt) {
       if (evt.keyCode === window.utils.ESC_KEYCODE) {
         cardAndActiveClassRemove();
       }
     };
-    // закрывает карточку объявления по клику
+
     var onClickClosePopup = function () {
       cardAndActiveClassRemove();
     };
   };
 
-  // отправляет данные формы без перезагрузки страницы
   form.addEventListener('submit', function (evt) {
     window.upload(new FormData(form), function () {
     });
     evt.preventDefault();
   });
 
-  // переводит страницу в неактивное состяние
   var resetMapAndForm = function () {
     isPopupRendered();
     form.reset();
@@ -198,6 +148,14 @@
     window.messages.success();
     mainPin.addEventListener('mousedown', onShowMapAndForm);
     formResetButton.removeEventListener('click', resetMapAndForm);
+    window.filter.filterFeatures.removeEventListener('keydown', window.filter.onEnterCheckboxPress);
+    form.querySelector('.ad-form-header__avatar').setAttribute('src', 'img/muffin-grey.svg');
+    mapFilters.forEach(function (item) {
+      item.value = 'any';
+    });
+    if (form.querySelector('.ad-form__photo-housing')) {
+      form.querySelector('.ad-form__photo-housing').remove();
+    }
   };
 
   window.map = {

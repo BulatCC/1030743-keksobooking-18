@@ -1,36 +1,22 @@
 'use strict';
 
 (function () {
-  // поле ввода количества комнат в разметке
   var roomNumber = window.map.form.querySelector('#room_number');
-
-  // поле ввода количества гостей
   var guests = window.map.form.querySelector('#capacity');
-
-  // поле выбора типа жилья
   var placeType = window.map.form.querySelector('#type');
-
-  // поле ввода цены
   var price = window.map.form.querySelector('#price');
-
-  // поле заезда
   var timeIn = window.map.form.querySelector('#timein');
-
-  // поле выезда
   var timeOut = window.map.form.querySelector('#timeout');
 
-  // ставит атрибут 'disabled' в поле выбора количества гостей
   var disableElement = function (value) {
     return guests[value].setAttribute('disabled', '');
   };
 
-  // удаляет атрибут 'disabled' в поле выбора количества гостей
   var enableElement = function (value) {
     return guests[value].removeAttribute('disabled');
   };
 
   window.map.form.addEventListener('click', function () {
-    // синхронизирует поле «Количество комнат» с полем «Количество мест»
     if (roomNumber.value === '1') {
       guests.value = 1;
       disableElement(0);
@@ -55,7 +41,6 @@
       enableElement(3);
     }
 
-    // выводит кастомные сообщения об ошибке
     if (roomNumber.value === '100' && guests.value !== '0') {
       roomNumber.setCustomValidity('Не для гостей');
     } else if (guests.value === '0' && roomNumber.value !== '100') {
@@ -69,13 +54,11 @@
     }
   });
 
-  // записывает атрибуты в поле «Цена»
   var priceSet = function (pricenumber) {
     price.min = pricenumber;
     price.placeholder = pricenumber;
   };
 
-  // синхронизирует поле «Тип жилья» с полем «Цена»
   window.map.form.addEventListener('click', function () {
     if (placeType.value === 'bungalo') {
       priceSet(0);
@@ -88,7 +71,6 @@
     }
   });
 
-  // функция синхронизации время заезда и выезда
   var validateTimeInOut = function (listIn, listOut) {
     listOut.selectedIndex = listIn.selectedIndex;
   };
