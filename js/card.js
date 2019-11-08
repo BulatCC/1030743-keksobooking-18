@@ -1,14 +1,10 @@
 'use strict';
 
 (function () {
-  // находит шаблон карточки объявления в теге template
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
-  // создает шаблон карточки объявления для карты
   window.card = function (card) {
-    // клонирует шаблон
     var cardElement = cardTemplate.cloneNode(true);
-    // заполняет карточку объявления данными
     cardElement.querySelector('.popup__title').textContent = card.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
@@ -18,11 +14,9 @@
     cardElement.querySelector('.popup__description').textContent = card.offer.description;
     cardElement.querySelector('.popup__avatar').src = card.author.avatar;
 
-    // удаляетт дочерние элементы у блока popup__features
     var features = cardElement.querySelector('.popup__features');
     features.innerHTML = '';
 
-    // добавляет опции кондиционер лифт вайфай и т.д.
     for (var k = 0; k < card.offer.features.length; k++) {
       var li = document.createElement('li');
       li.classList.add('popup__feature');
@@ -30,12 +24,10 @@
       features.append(li);
     }
 
-    // удалаяет дочерний элемент у блока popup__description
     var photos = cardElement.querySelector('.popup__photos');
     var photo = cardElement.querySelector('.popup__photo');
     photos.removeChild(photo);
 
-    // добавляет фото помещения
     for (var j = 0; j < card.offer.photos.length; j++) {
       var image = document.createElement('img');
       image.classList.add('popup__photo');
