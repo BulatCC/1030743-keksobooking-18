@@ -23,19 +23,11 @@
   };
 
   // чекбоксы реагируют на нажатие enter
-  var onEnterCheckboxPress = function (arr) {
-    arr.forEach(function (item) {
-      item.addEventListener('keyup', function (evt) {
-        if (evt.keyCode === window.utils.ENTER_KEYCODE) {
-          event.preventDefault();
-          item.click();
-        }
-      });
-    });
+  var onEnterCheckboxPress = function (evt) {
+    if (evt.target.classList.contains('map__checkbox') && evt.keyCode === window.utils.ENTER_KEYCODE) {
+      evt.target.click();
+    }
   };
-
-  onEnterCheckboxPress(window.map.filterCheckboxes);
-
 
   // устранения "дребезга"
   var onFilterChange = window.debounce(function () {
@@ -100,7 +92,6 @@
       });
   };
 
-
   // фильтрует данные для отрисовки
   var comparing = function (data) {
     window.compared = data.filter(function (item) {
@@ -116,6 +107,7 @@
 
   window.filter = {
     comparing: comparing,
+    filterFeatures: filterFeatures,
     onEnterCheckboxPress: onEnterCheckboxPress
   };
 })();

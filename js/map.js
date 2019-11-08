@@ -73,6 +73,7 @@
     });
     mainPin.removeEventListener('mousedown', onShowMapAndForm);
     formResetButton.addEventListener('click', resetMapAndForm);
+    window.filter.filterFeatures.addEventListener('keydown', window.filter.onEnterCheckboxPress);
   };
 
   // активирует карту и форму по клику на основную метку
@@ -198,6 +199,11 @@
     window.messages.success();
     mainPin.addEventListener('mousedown', onShowMapAndForm);
     formResetButton.removeEventListener('click', resetMapAndForm);
+    window.filter.filterFeatures.removeEventListener('keydown', window.filter.onEnterCheckboxPress);
+    form.querySelector('.ad-form-header__avatar').setAttribute('src', 'img/muffin-grey.svg');
+    if (form.querySelector('.ad-form__photo-housing')) {
+      form.querySelector('.ad-form__photo-housing').remove();
+    }
   };
 
   window.map = {
