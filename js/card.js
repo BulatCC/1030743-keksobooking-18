@@ -20,9 +20,7 @@
 
     // удаляетт дочерние элементы у блока popup__features
     var features = cardElement.querySelector('.popup__features');
-    while (features.firstChild) {
-      features.removeChild(features.firstChild);
-    }
+    features.innerHTML = '';
 
     // добавляет опции кондиционер лифт вайфай и т.д.
     for (var k = 0; k < card.offer.features.length; k++) {

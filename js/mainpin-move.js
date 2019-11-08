@@ -50,7 +50,6 @@
         coordinatesX = MAX_WIDTH - window.map.INACTIVE_HALF_MAIN_PIN_SIZE;
       }
 
-
       // передаем координаты в атрибут style
       window.map.mainPin.style.top = coordinatesY + 'px';
       window.map.mainPin.style.left = coordinatesX + 'px';
