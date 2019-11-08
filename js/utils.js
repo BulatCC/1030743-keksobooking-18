@@ -6,7 +6,6 @@
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
 
-  // проверяет нажат ли Enter
   var isEnterPressed = function (evt) {
     return evt.keyCode === ENTER_KEYCODE;
   };
