@@ -1,12 +1,10 @@
 'use strict';
 
 (function () {
-  // тэг main
+
   var mainTag = document.querySelector('main');
 
-  // выводит и скрывает сообщение об ошибке если ошибка сервера
   var onError = function () {
-    // клонирует шаблон сообщения об ошибке
     var errorTemplate = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
     mainTag.appendChild(errorTemplate);
     var errorMessage = mainTag.querySelector('.error');
@@ -20,9 +18,7 @@
     });
   };
 
-  // выводит и скрывает сообщение что все ок
   var success = function () {
-  // клонирует шаблон сообщения об успехе
     var successTemplate = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
     mainTag.appendChild(successTemplate);
     var successMessage = mainTag.querySelector('.success');

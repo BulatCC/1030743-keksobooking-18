@@ -9,10 +9,8 @@
 
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
-        // если все норм, переводит страницу в неактивное состяние
         window.map.resetMapAndForm();
       } else {
-        // если все плохо, выводит ошибку
         window.messages.onError();
       }
     });
