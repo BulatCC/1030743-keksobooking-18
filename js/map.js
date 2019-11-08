@@ -9,11 +9,14 @@
   // форма
   var form = document.querySelector('.ad-form');
 
-  // добавляет атрибут 'disabled' форме
+  // поля формы
   var fieldsets = document.querySelectorAll('fieldset');
-  for (var i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].setAttribute('disabled', '');
-  }
+
+  // фильтры
+  var filters = map.querySelectorAll('.map__filter');
+
+  // чекбоксы в фильтре
+  var filterCheckboxes = map.querySelectorAll('.map__checkbox');
 
   // основная метка в разметке
   var mainPin = document.querySelector('.map__pin--main');
@@ -27,6 +30,9 @@
   // координаты цифрами с помощью регулярного выражения
   var addressFormCoordinates = mainPinCoordinates.match(/\d+/g);
 
+  // кнопка сброса формы
+  var formResetButton = form.querySelector('.ad-form__reset');
+
   // координаты основной метки
   var getCoordinatesPin = function (pin) {
     return [+addressFormCoordinates[0] + INACTIVE_HALF_MAIN_PIN_SIZE, +addressFormCoordinates[1] + pin].join(', ');
@@ -35,17 +41,25 @@
   // добавляет координаты карты в неактивном состоянии
   addressField.setAttribute('value', getCoordinatesPin(INACTIVE_HALF_MAIN_PIN_SIZE));
 
-  // форма с филтрами
-  var filters = map.querySelector('.map__filters');
-
-  // тип жилья
-  var filterPlaceType = filters.querySelector('#housing-type');
+  // добавляет атрибут 'disabled' форме, фильтру и сбрасывает чекбоксы
+  var fieldsetsDisabler = function () {
+    fieldsets.forEach(function (item) {
+      item.setAttribute('disabled', '');
+    });
+    filters.forEach(function (item) {
+      item.setAttribute('disabled', '');
+    });
+    filterCheckboxes.forEach(function (item) {
+      item.checked = false;
+    });
+  };
+  fieldsetsDisabler();
 
   // делает карту и форму активными, отрисовывает метки на карте
   var onShowMapAndForm = function () {
     // сохраняет в перемнную данные с сервера
-    window.filter.comparing();
-    // отрисовывает пины с учетом фильтации (так должно быть, но пока не работает)
+    window.filter.comparing(window.serverData);
+    // отрисовывает пины с учетом фильтации
     onSuccess(window.compared);
     map.classList.remove('map--faded');
     // записывает координаты метки в поле 'адрес'
@@ -54,9 +68,12 @@
     for (var j = 0; j < fieldsets.length; j++) {
       fieldsets[j].removeAttribute('disabled');
     }
+    filters.forEach(function (item) {
+      item.removeAttribute('disabled', '');
+    });
+    mainPin.removeEventListener('mousedown', onShowMapAndForm);
+    formResetButton.addEventListener('click', resetMapAndForm);
   };
-
-  filterPlaceType.addEventListener('change', onShowMapAndForm);
 
   // активирует карту и форму по клику на основную метку
   mainPin.addEventListener('mousedown', onShowMapAndForm);
@@ -68,14 +85,13 @@
     }
   });
 
-
   // отрисовывает пины на карте
   var onSuccess = function (pindata) {
     // отчищает div перед отрисовкой
     window.pin.similarAdv.innerHTML = '';
     // создает фрагмент для вставки в шаблон
     var fragment = document.createDocumentFragment();
-    for (var k = 0; k < window.compared.length; k++) {
+    for (var k = 0; k < window.compared.length; k++) { // !!!!!потом исправить
       fragment.appendChild(window.pin.createMapPin(pindata[k]));
     }
     window.pin.similarAdv.append(fragment);
@@ -84,20 +100,19 @@
     // выводит переменную в глобальную область видимости
     window.mapPins = mapPins;
     // добавляет дата-атрибуты пинам
-    for (var j = 0; j < window.compared.length; j++) {
+    for (var j = 0; j < window.compared.length; j++) { // !!!!!потом исправить
       mapPins[j].setAttribute('data-index', j);
     }
     // отслеживает на какой пин был клик
     onClickPin();
   };
 
-
   // отрисовывает карточку объявления
   var showOffer = function (dataindex) {
     // создает фрагмент с карточкой объявления для вставки в шаблон
     var cardFragment = document.createDocumentFragment();
     // создает карточку по индексу пина
-    cardFragment.appendChild(window.card(window.compared[dataindex]));
+    cardFragment.appendChild(window.card(window.compared[dataindex])); // !!!!!потом исправить
     window.pin.similarAdv.appendChild(cardFragment);
   };
 
@@ -131,13 +146,13 @@
 
   // находит пин по которому был клик
   var onClickPin = function () {
-    var addClickListener = function (mappin) {
-      mapPin.addEventListener('click', function () {
+    window.mapPins.forEach(function (mappin) {
+      mappin.addEventListener('click', function () {
         // удаляет класс map__pin--active при переключении на другую карточку
         getActivePin();
         // находит пин по дата атрибуту
         var cardIndex = mappin.getAttribute('data-index');
-        mapPin.classList.add('map__pin--active');
+        mappin.classList.add('map__pin--active');
         // отрисовывает карточку по индексу пина
         getRenderedCard(cardIndex);
         // обработчик нажатия esc для закрытия карточки
@@ -146,13 +161,7 @@
         var closePopup = map.querySelector('.popup__close');
         closePopup.addEventListener('click', onClickClosePopup);
       });
-    };
-
-    // находит пин по которму был клик
-    for (var j = 0; j < window.mapPins.length; j++) {
-      var mapPin = window.mapPins[j];
-      addClickListener(mapPin);
-    }
+    });
 
     // закрывает карточку объявления по нажатию на Esc
     var onEscClosePopup = function (evt) {
@@ -183,8 +192,12 @@
     mainPin.style.top = '375px';
     mainPin.style.left = '570px';
     map.classList.add('map--faded');
+    form.classList.add('ad-form--disabled');
     addressField.setAttribute('value', '602, 407');
+    fieldsetsDisabler();
     window.messages.success();
+    mainPin.addEventListener('mousedown', onShowMapAndForm);
+    formResetButton.removeEventListener('click', resetMapAndForm);
   };
 
   window.map = {
@@ -193,7 +206,9 @@
     INACTIVE_HALF_MAIN_PIN_SIZE: INACTIVE_HALF_MAIN_PIN_SIZE,
     addressField: addressField,
     resetMapAndForm: resetMapAndForm,
-    filterPlaceType: filterPlaceType,
-    onShowMapAndForm: onShowMapAndForm
+    onShowMapAndForm: onShowMapAndForm,
+    map: map,
+    onSuccess: onSuccess,
+    filterCheckboxes: filterCheckboxes
   };
 })();

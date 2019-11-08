@@ -7,6 +7,18 @@
   // поле ввода количества гостей
   var guests = window.map.form.querySelector('#capacity');
 
+  // поле выбора типа жилья
+  var placeType = window.map.form.querySelector('#type');
+
+  // поле ввода цены
+  var price = window.map.form.querySelector('#price');
+
+  // поле заезда
+  var timeIn = window.map.form.querySelector('#timein');
+
+  // поле выезда
+  var timeOut = window.map.form.querySelector('#timeout');
+
   // ставит атрибут 'disabled' в поле выбора количества гостей
   var disableElement = function (value) {
     return guests[value].setAttribute('disabled', '');
@@ -57,14 +69,6 @@
     }
   });
 
-  // <-------------------- 9. доверяй, но проверяй -------------------->
-
-  // поле выбора типа жилья
-  var placeType = window.map.form.querySelector('#type');
-
-  // поле ввода цены
-  var price = window.map.form.querySelector('#price');
-
   // записывает атрибуты в поле «Цена»
   var priceSet = function (pricenumber) {
     price.min = pricenumber;
@@ -83,12 +87,6 @@
       priceSet(10000);
     }
   });
-
-  // поле заезда
-  var timeIn = window.map.form.querySelector('#timein');
-
-  // поле выезда
-  var timeOut = window.map.form.querySelector('#timeout');
 
   // функция синхронизации время заезда и выезда
   var validateTimeInOut = function (listIn, listOut) {

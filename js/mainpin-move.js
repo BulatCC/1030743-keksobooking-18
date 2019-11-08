@@ -3,7 +3,7 @@
 (function () {
   var MIN_HEIGHT = 130;
   var MAX_HEIGHT = 630;
-  var MIN_WIDTH = 0;
+  var MIN_WIDTH = -32;
   var MAX_WIDTH = 1200;
 
   // Перетсакиваем основную метку
