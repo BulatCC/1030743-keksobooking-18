@@ -36,7 +36,7 @@
     if (filterPlaceType.value === 'any') {
       return true;
     }
-      return filterPlaceType.value === item.offer.type;
+    return filterPlaceType.value === item.offer.type;
   };
 
   var priceFiltration = function (item) {
@@ -55,14 +55,14 @@
     if (filterRoomsQuantity.value === 'any') {
       return true;
     }
-      return +filterRoomsQuantity.value === item.offer.rooms;
+    return +filterRoomsQuantity.value === item.offer.rooms;
   };
 
   var guestsFiltration = function (item) {
     if (filterGuestsQuantity.value === 'any') {
       return true;
     }
-      return +filterGuestsQuantity.value === item.offer.guests;
+    return +filterGuestsQuantity.value === item.offer.guests;
   };
 
   var featuresFiltration = function (item) {
