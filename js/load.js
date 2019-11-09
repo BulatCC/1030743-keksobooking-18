@@ -7,7 +7,7 @@
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === window.utils.HTTP_STATUS_OK) {
         window.serverData = xhr.response;
       } else {
         window.messages.onError();
