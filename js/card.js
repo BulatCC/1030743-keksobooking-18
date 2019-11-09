@@ -46,4 +46,8 @@
     house: 'Дом',
     bungalo: 'Бунгало'
   };
+
+  window.card = {
+    placeType: placeType
+  }
 })();

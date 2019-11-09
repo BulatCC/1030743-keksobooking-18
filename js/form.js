@@ -5,6 +5,11 @@
   var FLAT_PRICE = 1000;
   var HOUSE_PRICE = 5000;
   var PALACE_PRICE = 10000;
+  var BUNGALO = 'bungalo';
+  var FLAT = 'flat';
+  var HOUSE = 'house';
+  var PALACE = 'palace';
+
 
   var roomNumber = window.map.form.querySelector('#room_number');
   var guests = window.map.form.querySelector('#capacity');
@@ -65,13 +70,13 @@
   };
 
   window.map.form.addEventListener('click', function () {
-    if (placeType.value === 'bungalo') {
+    if (placeType.value === BUNGALO) {
       priceSet(BUNGALO_PRICE);
-    } else if (placeType.value === 'flat') {
+    } else if (placeType.value === FLAT) {
       priceSet(FLAT_PRICE);
-    } else if (placeType.value === 'house') {
+    } else if (placeType.value === HOUSE) {
       priceSet(HOUSE_PRICE);
-    } else if (placeType.value === 'palace') {
+    } else if (placeType.value === PALACE) {
       priceSet(PALACE_PRICE);
     }
   });
