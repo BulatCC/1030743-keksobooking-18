@@ -158,7 +158,6 @@
     }
   };
 
-
   window.map = {
     form: form,
     mainPin: mainPin,
