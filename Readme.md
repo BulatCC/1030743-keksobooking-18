@@ -4,6 +4,8 @@
 
 * ES5
 
+-----
+
 * Студент: [Булат Карамышев](https://up.htmlacademy.ru/javascript/18/user/1030743).
 * Наставник: [Дмитрий Прибитков](https://htmlacademy.ru/profile/id1061259).
 
