@@ -35,8 +35,10 @@
   var placeFiltration = function (item) {
     if (filterPlaceType.value === 'any') {
       return true;
+    } else {
+      return filterPlaceType.value === item.offer.type;
     }
-    return filterPlaceType.value === item.offer.type;
+    
   };
 
   var priceFiltration = function (item) {
@@ -54,15 +56,19 @@
   var roomsFiltration = function (item) {
     if (filterRoomsQuantity.value === 'any') {
       return true;
+    } else {
+      return +filterRoomsQuantity.value === item.offer.rooms;
     }
-    return +filterRoomsQuantity.value === item.offer.rooms;
+
   };
 
   var guestsFiltration = function (item) {
     if (filterGuestsQuantity.value === 'any') {
       return true;
+    } else {
+      return +filterGuestsQuantity.value === item.offer.guests;
     }
-    return +filterGuestsQuantity.value === item.offer.guests;
+
   };
 
   var featuresFiltration = function (item) {
